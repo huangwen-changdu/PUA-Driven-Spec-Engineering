@@ -1,6 +1,6 @@
 ---
 name: using-superpowers-pua
-description: "当任务开始时需要严格流程约束，尤其是在有压力、容易跳步骤、自由发挥或先做后想时使用"
+description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when starting any coding, debugging, design, review, planning, or validation task; when installing or validating the PUA workflow; when the user says /pua; or when pressure, frustration, repeated failures, quality complaints, or skip-step risk require routing through pua-gate and pua-escalation before action."
 ---
 
 # 使用 Superpowers PUA

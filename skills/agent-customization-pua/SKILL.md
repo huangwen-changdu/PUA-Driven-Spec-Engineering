@@ -13,6 +13,7 @@ description: '**WORKFLOW SKILL (PUA版)** — 创建、更新、审查、修复 
 | 原语 | 何时使用 |
 |------|---------|
 | Agent Instructions | 始终生效，全项目通用 |
+| CodeBuddy Rules | CodeBuddy 中需要总是加载、智能体按需加载或 `@规则名` 手动加载的团队/用户规则 |
 | File Instructions | 通过 `applyTo` 模式显式匹配，或通过 `description` 按需发现 |
 | MCP | 集成外部系统、API 或数据 |
 | Hooks | 在 agent 生命周期节点执行确定性 shell 命令（阻止工具、自动格式化、注入上下文） |
@@ -27,13 +28,14 @@ description: '**WORKFLOW SKILL (PUA版)** — 创建、更新、审查、修复 
 | 类型 | 文件 | 位置 | 参考 |
 |------|------|----------|------|
 | agent instructions | `copilot-instructions.md`, `AGENTS.md` | `.github/` 或根目录 | [Link](./references/agent-instructions.md) |
+| CodeBuddy Rules | `RULE.mdc` | `.codebuddy/rules/<name>/RULE.mdc`, `~/.codebuddy/rules/<name>/RULE.mdc` | [Link](./references/codebuddy-rules.md) |
 | File Instructions | `*.instructions.md` | `.github/instructions/` | [Link](./references/instructions.md) |
 | Prompts | `*.prompt.md` | `.github/prompts/` | [Link](./references/prompts.md) |
 | Hooks | `*.json` | `.github/hooks/` | [Link](./references/hooks.md) |
 | Custom Agents | `*.agent.md` | `.github/agents/` | [Link](./references/agents.md) |
-| Skills | `SKILL.md` | `.github/skills/<name>/`, `.agents/skills/<name>/`, `.claude/skills/<name>/` | [Link](./references/skills.md) |
+| Skills | `SKILL.md` | `.github/skills/<name>/`, `.agents/skills/<name>/`, `.claude/skills/<name>/`, `.codebuddy/skills/<name>/` | [Link](./references/skills.md) |
 
-**用户级别**：`{{VSCODE_USER_PROMPTS_FOLDER}}/`（*.prompt.md, *.instructions.md, *.agent.md；不含 skills）
+**用户级别**：`{{VSCODE_USER_PROMPTS_FOLDER}}/`（*.prompt.md, *.instructions.md, *.agent.md；不含 VS Code skills）；CodeBuddy 用户级 rules 可放在 `~/.codebuddy/rules/<name>/RULE.mdc`，用户级 skills 可放在 `~/.codebuddy/skills/<name>/`。
 定制化随用户设置同步漫游。
 
 ## 创建流程
@@ -43,8 +45,8 @@ description: '**WORKFLOW SKILL (PUA版)** — 创建、更新、审查、修复 
 ### 1. 确定范围
 
 问用户定制化放在哪里：
-- **Workspace**：项目特定、团队共享 → `.github/` 目录
-- **User profile**：个人、跨项目 → `{{VSCODE_USER_PROMPTS_FOLDER}}/`
+- **Workspace**：项目特定、团队共享 → `.github/` 目录；CodeBuddy Rule → `.codebuddy/rules/<name>/RULE.mdc`
+- **User profile**：个人、跨项目 → `{{VSCODE_USER_PROMPTS_FOLDER}}/`；CodeBuddy 用户规则 → `~/.codebuddy/rules/<name>/RULE.mdc`
 
 ### 2. 选择正确的原语
 

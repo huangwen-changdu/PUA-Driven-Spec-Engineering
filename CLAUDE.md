@@ -68,7 +68,7 @@ R2+ 变更必须有 OpenSpec 文档落地，没有文档不允许开写。变更
 - 只有命中索引 trigger 后，才读取对应 `.copilot/cards/**/*.md`
 - 禁止启动时全量读取 `.copilot/cards/**`
 - `.copilot` 负责项目经验和踩坑记录
-- 协作规范见本文件，编码规则见项目级指令文件（如 `.github/instructions/`、`.codebuddy/instructions/`），不另建重复说明文件
+- 协作规范见本文件，编码规则见项目级指令文件（如 `.github/instructions/`）或 CodeBuddy Rules（如 `.codebuddy/rules/<name>/RULE.mdc`），不另建重复说明文件
 
 ---
 

@@ -6,13 +6,13 @@
 
 本套件支持三个 AI 编程平台，按需选择：
 
-| 平台 | Skill 支持 | 指令文件 | 最小版本 |
-|------|-----------|---------|---------|
-| **Claude Code** | 完整 SKILL.md + references | `CLAUDE.md` / `.claude/instructions.md` | v1.0.26+ |
-| **OpenAI Codex CLI** | AGENTS.md 纯 Markdown 指令 | `AGENTS.md` | 最新版 |
-| **CodeBuddy** | 完整 SKILL.md（兼容 Claude 格式） | `.codebuddy/` 指令 / `.instructions.md` | 最新版 |
+| 平台 | Skill 支持 | 指令文件 | 最小版本 | 关键注意 |
+|------|-----------|---------|---------|---------|
+| **Claude Code** | 完整 `SKILL.md` + references | `CLAUDE.md` / `.claude/instructions.md` | v1.0.26+ | 安装 skills 后仍需入口指令 |
+| **OpenAI Codex CLI** | 不加载 `SKILL.md`；只吃 Markdown 指令 | `AGENTS.md` | 最新版 | 不要复制 `skills/` 当作 Codex skill |
+| **CodeBuddy** | `.codebuddy/skills/` 下的 `SKILL.md` | `.codebuddy/` 指令 / `.instructions.md` | 最新版 | `list skills` 只证明可发现，自动流程还需指令或手动触发 |
 
-> **核心区别**：Claude Code 和 CodeBuddy 支持 SKILL.md 技能文件（含 references 目录、scripts），可完整加载 PUA 的方法论、味道系统等。Codex 仅支持纯 Markdown 指令文件，需将 PUA 核心规则内联到 AGENTS.md。
+> **核心区别**：Claude Code 和 CodeBuddy 可以发现 `SKILL.md` 技能文件；Codex 仅支持纯 Markdown 指令文件，需将 PUA 核心规则内联到 `AGENTS.md`。对 Claude Code / CodeBuddy 来说，"安装 skill"只代表可用；要保证完整套件启动，必须显式触发 `use_skill("using-superpowers-pua")`，或在项目指令中要求每次对话第一动作执行它。
 
 ---
 
@@ -40,6 +40,14 @@ Copy-Item -Recurse -Force skills\* "$env:USERPROFILE\.claude\skills\"
 ```
 
 安装后所有 20 个 skill（19 个 PUA skill + `karpathy-guidelines` 编码准则）跨项目可用。
+
+**关键：安装不等于自动触发。** 还必须在目标项目的 `CLAUDE.md` 或 `.claude/instructions.md` 中加入入口指令：
+
+```markdown
+每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
+```
+
+否则模型可能只在压力词命中时加载 `pua` 核心味道层，而不会稳定进入 `pua-gate` / `pua-escalation` 的完整套件流程。
 
 **方式 B：仅项目级使用**
 
@@ -154,7 +162,9 @@ codex --ask-for-approval never "Summarize the instructions you have loaded for t
 
 #### 安装 Skills
 
-CodeBuddy 兼容 Claude Code 的 SKILL.md 格式，支持两种部署路径：
+CodeBuddy 支持在 `.codebuddy/skills/` 下发现 `SKILL.md` 技能，支持两种部署路径。注意：技能出现在 `list skills` 中只表示可发现；要运行完整 PUA 流程，还需要手动触发 `use_skill("using-superpowers-pua")`，或配置 CodeBuddy Rule 自动要求入口执行。
+
+CodeBuddy Rule 的项目级结构是 `.codebuddy/rules/<rule-name>/RULE.mdc`；用户级规则存放在用户目录中，例如 Windows 上可见为 `C:\Users\huangwen\.codebuddy\rules\default-agent-flow\RULE.mdc`。若要全局默认每次会话都走 PUA 入口，建议使用用户级 `default-agent-flow` 这类 `alwaysApply: true` 规则；若要团队共享，则放到仓库的 `.codebuddy/rules/default-agent-flow/RULE.mdc`。
 
 | 路径 | 作用域 | 团队共享 |
 |------|--------|---------|
@@ -220,26 +230,31 @@ model: inherit
 - 说"完成"前必须有验证证据
 ```
 
-#### CodeBuddy 自定义指令（可选）
+#### CodeBuddy Rules（推荐用于自动触发）
 
-在 `.codebuddy/instructions/` 下创建 PUA 相关指令：
+在 CodeBuddy 中，要让流程每次会话自动生效，推荐创建 `alwaysApply: true` 的 Rule，而不是只依赖 skills 自动发现。
+
+**用户级（个人全局）**：例如 Windows 下可见为 `C:\Users\huangwen\.codebuddy\rules\default-agent-flow\RULE.mdc`。
+
+**项目级（团队共享）**：在仓库中创建 `.codebuddy/rules/default-agent-flow/RULE.mdc`：
 
 ```markdown
 ---
-description: "PUA 工程流程指令，在编码、调试、设计任务时自动触发"
-applyTo: "**"
-name: pua-workflow
+description: 全局默认 AI 协作流程
+alwaysApply: true
+enabled: true
+provider:
 ---
 
-## PUA 流程约束
-- 编码行为准则由 `karpathy-guidelines` skill 定义，首次涉及写代码时执行 `use_skill("karpathy-guidelines")` 获取完整规则
-- 三维门禁：需求成熟度 + 变更风险 + 复合升级，命中 2+ 维度额外升档
-- 变更风险 ≥ R2 时走 OpenSpec 四层渐进确认（做一步确认一步）
-- 说"完成"前必须有验证证据
-- 连续失败时换策略不换语气
+## 默认技能流程
+
+每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
+普通问题走 G0/G1 轻量快放，高压问题走完整 PUA 流程。
 ```
 
-#### 验证 Skills 加载
+> CodeBuddy 官方规则机制：`alwaysApply: true` 会在每个聊天会话加载规则全文；创建或修改规则后，需要新建对话会话才会生效。可在新会话中询问“当前应用了哪些规则？”验证是否加载。
+
+#### CodeBuddy 自定义 Agent（可选）
 
 在 CodeBuddy 对话框中输入：
 
@@ -247,7 +262,15 @@ name: pua-workflow
 list skills
 ```
 
-确认 `pua`、`pua-gate`、`superpowers-pua` 等技能出现在列表中。
+确认 `using-superpowers-pua`、`pua`、`pua-gate`、`pua-escalation` 等技能出现在列表中。
+
+然后输入：
+
+```
+use_skill("using-superpowers-pua")
+```
+
+期望现象：模型先加载 `using-superpowers-pua`，再进入 `pua-gate`。如果只加载 `pua`，说明核心味道层可用，但完整套件路由还没接上。
 
 ---
 
@@ -286,7 +309,7 @@ powershell -ExecutionPolicy Bypass -File ~/.codebuddy/skills/pua-learning-loop/s
 - 只有命中索引 trigger 后，才读取对应 `.copilot/cards/**/*.md`
 - 禁止启动时全量读取 `.copilot/cards/**`
 - `.copilot` 负责项目经验和踩坑记录
-- 协作规范见项目 AGENTS.md，编码规则见项目级指令文件（如 `.github/instructions/`、`.codebuddy/instructions/`），不另建重复说明文件
+- 协作规范见项目 AGENTS.md，编码规则见项目级指令文件（如 `.github/instructions/`）或 CodeBuddy Rules（如 `.codebuddy/rules/<name>/RULE.mdc`），不另建重复说明文件
 
 ## 二、如何触发 PUA 流程
 
@@ -299,7 +322,9 @@ powershell -ExecutionPolicy Bypass -File ~/.codebuddy/skills/pua-learning-loop/s
 本仓库默认使用 `superpowers-pua` 技能套件。每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
 ```
 
-**手动触发**：在对话中输入 `/pua` 或 `use_skill("using-superpowers-pua")`
+**手动触发完整套件**：在对话中输入 `use_skill("using-superpowers-pua")`。
+
+> 注意：`/pua` 在部分客户端可能只命中 `pua` 核心味道层；需要完整门禁、升级和验证流程时，优先使用 `use_skill("using-superpowers-pua")`。
 
 ### Codex CLI 触发
 
@@ -325,7 +350,12 @@ use_skill("using-superpowers-pua")
 使用 pua-engineer 子代理执行这个任务
 ```
 
-**自定义指令触发**：在 `.codebuddy/instructions/` 下配置了 `applyTo: "**"` 的指令会自动加载。
+**Rule 自动触发**：在 CodeBuddy Rules 中配置 `alwaysApply: true` 的 `RULE.mdc`，例如：
+
+- 用户级：`~/.codebuddy/rules/default-agent-flow/RULE.mdc`（Windows 示例：`C:\Users\huangwen\.codebuddy\rules\default-agent-flow\RULE.mdc`）
+- 项目级：`.codebuddy/rules/default-agent-flow/RULE.mdc`
+
+规则内容中要求每次对话第一动作执行 `use_skill("using-superpowers-pua")`。修改规则后需要新建对话会话才会生效。
 
 ### 压力触发词（三个平台通用）
 
@@ -473,7 +503,7 @@ mkdir -p .codebuddy/skills
 cp -r /path/to/PUA-Driven-Spec-Engineering/skills/* .codebuddy/skills/
 ```
 
-在对话中使用 `use_skill("using-superpowers-pua")` 触发。
+在对话中先用 `list skills` 确认可发现，再使用 `use_skill("using-superpowers-pua")` 触发完整套件。仅复制 skills 不会强制每轮自动从入口启动。
 
 **方式 B：通过子代理**
 
@@ -516,16 +546,21 @@ model: inherit
 - 说"完成"前：必须有验证证据
 ```
 
-**方式 C：通过自定义指令**
+**方式 C：通过 CodeBuddy Rule 自动触发**
 
-创建 `.codebuddy/instructions/pua-workflow.instructions.md`：
+创建 `.codebuddy/rules/default-agent-flow/RULE.mdc`：
 
 ```markdown
 ---
-description: "PUA 工程流程约束。在编码、调试、设计、review 任务时自动触发"
-applyTo: "**"
-name: pua-workflow
+description: 全局默认 AI 协作流程
+alwaysApply: true
+enabled: true
+provider:
 ---
+
+## 默认技能流程
+- 每次开始编码、调试、设计、review、验证或安装排查任务时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
+- 如果用户使用 `/pua`、催压、不满、指出事实错误或要求返工，也必须先进入 `using-superpowers-pua`，再由 `pua-gate` 判定是否升级。
 
 ## PUA 流程约束
 - 编码行为准则由 `karpathy-guidelines` skill 定义，首次涉及写代码时执行 `use_skill("karpathy-guidelines")` 获取完整规则
@@ -534,6 +569,8 @@ name: pua-workflow
 - 说"完成"前必须有验证证据
 - 连续失败时换策略不换语气
 ```
+
+> 个人全局规则可放在用户目录，例如 `C:\Users\huangwen\.codebuddy\rules\default-agent-flow\RULE.mdc`；团队共享规则放在项目 `.codebuddy/rules/` 下。
 
 ### 各平台文件优先级
 

@@ -79,15 +79,15 @@ LLM 编码时的常见问题：
 
 ## Install
 
-Supports three AI coding platforms:
+Supports three AI coding platforms, but the activation model is different on each platform:
 
-| Platform | Skill Support | Instructions File |
-|----------|--------------|-------------------|
-| **Claude Code** | Full SKILL.md + references | `CLAUDE.md` / `.claude/instructions.md` |
-| **OpenAI Codex CLI** | AGENTS.md (Markdown only) | `AGENTS.md` |
-| **CodeBuddy** | Full SKILL.md (Claude-compatible) | `.codebuddy/` instructions / agents |
+| Platform | Skill Support | Instructions File | Important |
+|----------|--------------|-------------------|-----------|
+| **Claude Code** | Full `SKILL.md` + references | `CLAUDE.md` / `.claude/instructions.md` | Install skills **and** add the entry instruction |
+| **OpenAI Codex CLI** | No `SKILL.md`; Markdown rules only | `AGENTS.md` | Do **not** copy `skills/`; use AGENTS rules |
+| **CodeBuddy** | Skills via `.codebuddy/skills/` | Rules: `.codebuddy/rules/<name>/RULE.mdc` or user rules | Installing skills makes them discoverable; auto workflow needs an always-on Rule or manual trigger |
 
-### Option A: Claude Code (Manual)
+### Option A: Claude Code
 
 ```bash
 # Linux/macOS
@@ -97,22 +97,28 @@ cp -r skills/* ~/.claude/skills/
 Copy-Item -Recurse -Force skills\* "$env:USERPROFILE\.claude\skills\"
 ```
 
-This installs all 20 skills to `~/.claude/skills/`, available across all projects.
+Then add the entry instruction to your project `CLAUDE.md` or `.claude/instructions.md`:
+
+```markdown
+每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
+```
+
+Installing the 20 skills without this instruction only makes them available; it does not guarantee the suite entry runs first.
 
 ### Option B: OpenAI Codex CLI
 
-Codex uses plain Markdown `AGENTS.md` files. See [AGENTS.md](./AGENTS.md) section 2 for the Codex-specific configuration template.
+Codex does **not** load `skills/*/SKILL.md`. Use plain Markdown `AGENTS.md` rules instead. See [AGENTS.md](./AGENTS.md) section 2 for the Codex-specific configuration template.
 
 Quick setup:
 ```bash
-# Copy the Codex PUA template to global config
 mkdir -p ~/.codex
-# Then add PUA rules to ~/.codex/AGENTS.md or your project's AGENTS.md
+# Then write the minimal PUA rules from AGENTS.md into ~/.codex/AGENTS.md,
+# or place them in your project's AGENTS.md.
 ```
 
 ### Option C: CodeBuddy
 
-CodeBuddy is compatible with Claude's SKILL.md format:
+CodeBuddy supports project/user skills through `.codebuddy/skills/`:
 
 ```bash
 # Project-level (shared via Git)
@@ -123,14 +129,61 @@ cp -r skills/* .codebuddy/skills/
 cp -r skills/* ~/.codebuddy/skills/
 ```
 
-You can also configure as a CodeBuddy sub-agent or custom instruction. See [AGENTS.md](./AGENTS.md) section 3 for templates.
+After installing, verify the skills are discoverable with `list skills`, then trigger the suite with `use_skill("using-superpowers-pua")`.
 
-### Option D: Per-Project (basic, any platform)
+If you want the workflow to run automatically in CodeBuddy, add an always-on Rule. Skills being listed means they are discoverable; it does not by itself force every conversation to start from `using-superpowers-pua`.
+
+CodeBuddy Rules use `RULE.mdc` files:
+
+```text
+# Project-level, shared via Git
+.codebuddy/rules/default-agent-flow/RULE.mdc
+
+# User-level, personal/global; actual path may vary by OS/client
+~/.codebuddy/rules/default-agent-flow/RULE.mdc
+```
+
+A minimal always-on rule frontmatter is:
+
+```markdown
+---
+description: 全局默认 AI 协作流程
+alwaysApply: true
+enabled: true
+provider:
+---
+
+每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
+```
+
+### Option D: Per-Project basic rules
 
 ```bash
-# Only CLAUDE.md — basic PUA flow constraints without full skills
+# Claude Code basic rules only — no full skills
 curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/PUA-Driven-Spec-Engineering/main/CLAUDE.md
 ```
+
+For Codex CLI, use `AGENTS.md` instead of `CLAUDE.md`. For CodeBuddy, use `.codebuddy/rules/<name>/RULE.mdc` or a user rule such as `~/.codebuddy/rules/default-agent-flow/RULE.mdc`, plus `.codebuddy/skills/` and an explicit `use_skill("using-superpowers-pua")` trigger for verification.
+
+## Activation Checklist
+
+Use this checklist after any LLM-assisted installation:
+
+1. **Skills are installed in a platform-supported path**
+   - Claude Code: `~/.claude/skills/<skill-name>/SKILL.md`
+   - CodeBuddy: `.codebuddy/skills/<skill-name>/SKILL.md` or `~/.codebuddy/skills/<skill-name>/SKILL.md`
+   - Codex CLI: no `SKILL.md` runtime; use `AGENTS.md`
+2. **The suite entry is explicit**
+   - Full workflow entry: `use_skill("using-superpowers-pua")`
+   - Core flavor only: `pua`
+3. **The model can discover the skills**
+   - In CodeBuddy, run `list skills` and confirm `using-superpowers-pua`, `pua-gate`, and `pua-escalation` are listed.
+4. **The first assistant action proves routing works**
+   - Expected: the assistant loads `using-superpowers-pua`, then runs `pua-gate`.
+   - If it only loads `pua`, the flavor layer is working but the full suite is not routed correctly.
+5. **A pressure trigger escalates**
+   - Send: `换个方法，这个问题不能空口完成`
+   - Expected: visible `pua-gate` / `pua-escalation` behavior and a concrete fact-finding action.
 
 ## Environment Configuration
 
@@ -160,16 +213,19 @@ curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/PUA-Driven-Spec
 ## How to Trigger
 
 ### Claude Code
-- **Auto**: Add `use_skill("using-superpowers-pua")` to `CLAUDE.md`
-- **Manual**: `/pua` or `use_skill("using-superpowers-pua")`
+- **Full-suite trigger**: `use_skill("using-superpowers-pua")`
+- **Auto discipline**: put the above instruction in `CLAUDE.md` / `.claude/instructions.md`
+- **Note**: `/pua` may trigger the core `pua` flavor layer on some clients; use `use_skill("using-superpowers-pua")` when you need the full gate/escalation workflow.
 
 ### Codex CLI
 - **Auto**: PUA rules in `AGENTS.md` are loaded automatically
 - **Manual**: "按照 AGENTS.md 中的 PUA 流程约束执行"
+- **Note**: Codex has no `use_skill` runtime and will not load `SKILL.md` files.
 
 ### CodeBuddy
-- **Auto**: Skills loaded from `.codebuddy/skills/` or `~/.codebuddy/skills/`
-- **Manual**: `use_skill("using-superpowers-pua")` or "使用 pua-engineer 子代理"
+- **Discover**: install skills under `.codebuddy/skills/` or `~/.codebuddy/skills/`, then run `list skills`
+- **Full-suite trigger**: `use_skill("using-superpowers-pua")`
+- **Auto workflow**: add an always-on CodeBuddy Rule such as `.codebuddy/rules/default-agent-flow/RULE.mdc` or user-level `~/.codebuddy/rules/default-agent-flow/RULE.mdc`; installing skills alone is not enough to force automatic execution.
 
 ### Pressure triggers (auto-escalate)
 - Chinese: `加油` `别偷懒` `你再试试` `为什么还不行` `又错了` `换个方法`

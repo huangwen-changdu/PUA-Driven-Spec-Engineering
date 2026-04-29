@@ -1,6 +1,6 @@
 ---
 name: superpowers-pua
-description: "当用户想使用整套 superpowers 流程，但又要求更强约束、更高主动性，以及在高压下更严格执行时使用"
+description: "Suite controller for PUA-Driven Spec Engineering. Use when the user asks for the full superpowers-pua workflow, /pua suite behavior, strict coding/debug/design/review process, pua-gate routing, pua-escalation, or higher-agency execution under pressure."
 ---
 
 # Superpowers PUA 套件

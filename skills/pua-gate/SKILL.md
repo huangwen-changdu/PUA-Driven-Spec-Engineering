@@ -1,6 +1,6 @@
 ---
 name: pua-gate
-description: "Use when进入 superpowers-pua 套件任一阶段前，或用户用 /pua、催压、不满、返工、质疑结果时需要强制检查并触发可见 PUA 响应"
+description: "Use when entering any superpowers-pua stage or handling /pua, pressure, frustration, rework, factual challenges, repeated failures, or quality complaints; performs mandatory gate checks and triggers visible PUA responses."
 ---
 
 # PUA Gate
