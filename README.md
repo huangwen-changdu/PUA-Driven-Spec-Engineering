@@ -1,8 +1,7 @@
 # PUA-Driven Spec Engineering
 
 > A comprehensive Claude Code skill suite for high-agency, exhaustive problem-solving with adaptive PUA pressure.
->
-> Follow me on X: [https://x.com/jiayuan_jy](https://x.com/jiayuan_jy)
+
 
 ## What Is This
 
