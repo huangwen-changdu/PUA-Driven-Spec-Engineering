@@ -11,7 +11,7 @@ description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when 
 
 **核心原则：** 只要有对应技能，就先加载技能，再开始行动。压力不是跳流程的理由；任务进入后先经过 `pua-gate`，普通问题 G0/G1 可内联快放，门禁要求升级时再调用 `pua-escalation` 收紧流程。
 
-**PUA references 开关：** 默认 `PUA_REFERENCES=ON`。进入本入口后必须读取 `pua/references/display-protocol.md`、`pua/references/methodology-router.md`、`pua/references/flavors.md`，并按任务味道读取对应 `pua/references/methodology-{company}.md`。只有用户明确说“关闭 PUA references 强制读取”或配置 `PUA_REFERENCES=OFF` 时才跳过；用户重新说“开启 PUA references 强制读取”即可恢复。
+**PUA references 开关：** 默认 `PUA_REFERENCES=OFF`。关闭时只保留轻量微标和核心行为约束，不强制读取 reference 文件。用户说"开启 PUA references"或配置 `PUA_REFERENCES=ON` 时，进入本入口后必须读取 `pua/references/display-protocol.md`、`pua/references/methodology-router.md`、`pua/references/flavors.md`，并按任务味道读取对应 `pua/references/methodology-{company}.md`。
 
 ## 第 0 步：自适应门禁
 
@@ -24,6 +24,8 @@ description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when 
 2. **理解项目上下文**：当前项目是什么、能干什么、现有结构是怎样的？必须先搜代码、读上下文，而不是拍脑袋假设。
 
 **为什么**：用户说一句"把这个改一下"，背后可能是跨多文件的架构变更。不先理解就给 G0，等于跳过了设计直接动手。
+**如何验证理解是真的**：G2+ 任务必须在输出模板前执行至少 1 次代码搜索/文件读取，模板中的"理解确认"行必须引用搜索结果。没有工具动作的理解不是理解，是复读。详见 `pua-gate` 技能。
+
 进入本 skill 后，先经过 `pua-gate` 并按档位执行：
 
 - `G0/G1 PASS`：普通问题轻量快放，输出一行微标（`🟠 PUA · {味道} · G0 · {约束}`）
