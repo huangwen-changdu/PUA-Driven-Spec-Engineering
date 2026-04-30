@@ -80,3 +80,15 @@ R2+ 变更必须有 OpenSpec 文档落地，没有文档不允许开写。变更
 ## 底线
 
 **先技能后行动；先查后问；先证据后结论；一旦高压信号出现，立刻调用 `pua-escalation` 收紧流程。**
+
+## .copilot 项目学习库
+
+本项目内置 `.copilot/` 项目学习库，配合 `pua-learning-loop` 技能自动记录和复用踩坑经验：
+
+- 普通任务可读 `.copilot/PROJECT_BRIEF.md`（项目元数据和数据源索引）
+- 出现用户纠正、重复失败、规则不生效或可复用坑点时，先读 `.copilot/LEARNING_INDEX.md`，命中后才读卡片
+- 只有命中索引 trigger 后，才读取对应 `.copilot/cards/**/*.md`
+- 禁止启动时全量读取 `.copilot/cards/**`
+- `.copilot` 负责项目经验和踩坑记录
+- 协作规范见本文件，编码规则见项目级指令文件（如 `.github/copilot-instructions.md`、`CLAUDE.md`）或 CodeBuddy Rules，不另建重复说明文件
+

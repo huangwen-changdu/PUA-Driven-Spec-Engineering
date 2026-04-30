@@ -92,4 +92,15 @@
 
 ---
 
+## .copilot 项目学习库
+
+本项目使用 `pua-learning-loop` 记录和复用踩坑经验：
+
+- 普通任务可读 `.copilot/PROJECT_BRIEF.md`（项目元数据和数据源索引）
+- 出现用户纠正、重复失败、规则不生效或可复用坑点时，先读 `.copilot/LEARNING_INDEX.md`，命中后才读卡片
+- 只有命中索引 trigger 后，才读取对应 `.copilot/cards/**/*.md`
+- 禁止启动时全量读取 `.copilot/cards/**`
+
+---
+
 > 完整安装配置指南见 [docs/SETUP.md](../docs/SETUP.md)
