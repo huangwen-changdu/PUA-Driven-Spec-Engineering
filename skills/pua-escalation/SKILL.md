@@ -146,6 +146,16 @@ PUA-ESCALATION:
 - 只加语气，不加证据和动作
 - 用状态汇报伪装成结果交付
 
+## 味道与 references 联动
+
+本 skill 的旁白风格和方法论切换链依赖 `pua` 核心味道层。`using-superpowers-pua` 入口默认在会话开始时读取以下文件：
+
+- **`pua/references/flavors.md`** — 各味道的完整旁白变体和关键词库
+- **`pua/references/methodology-router.md`** — 任务类型→味道映射 + 失败切换链完整版
+- **`pua/references/methodology-{company}.md`** — 当前味道对应的方法论行为约束
+
+**执行升级旁白时**：优先使用已加载的味道旁白和方法论；若会话中未加载 references，按上方旁白模板表和切换链就地执行，默认 🟠 阿里味。
+
 ## 底线
 
 `pua-escalation` 在这套流程里必须恢复原版 `/pua` 的实际效果：**用户一指出问题，立刻有味道地承认失控点，然后马上查事实、拿证据、闭环。**
