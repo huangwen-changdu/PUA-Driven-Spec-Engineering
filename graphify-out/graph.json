@@ -1,0 +1,61 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "init-copilot.ps1",
+      "file_type": "code",
+      "source_file": "skills\\pua-learning-loop\\scripts\\init-copilot.ps1",
+      "source_location": "L1",
+      "id": "skills_pua_learning_loop_scripts_init_copilot_ps1",
+      "community": 0,
+      "norm_label": "init-copilot.ps1"
+    },
+    {
+      "label": "Write-IfMissingOrForce()",
+      "file_type": "code",
+      "source_file": "skills\\pua-learning-loop\\scripts\\init-copilot.ps1",
+      "source_location": "L51",
+      "id": "init_copilot_write_ifmissingorforce",
+      "community": 0,
+      "norm_label": "write-ifmissingorforce()"
+    },
+    {
+      "label": "Relative-OrEmpty()",
+      "file_type": "code",
+      "source_file": "skills\\pua-learning-loop\\scripts\\init-copilot.ps1",
+      "source_location": "L81",
+      "id": "init_copilot_relative_orempty",
+      "community": 0,
+      "norm_label": "relative-orempty()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills\\pua-learning-loop\\scripts\\init-copilot.ps1",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_src": "skills_pua_learning_loop_scripts_init_copilot_ps1",
+      "_tgt": "init_copilot_write_ifmissingorforce",
+      "source": "skills_pua_learning_loop_scripts_init_copilot_ps1",
+      "target": "init_copilot_write_ifmissingorforce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "skills\\pua-learning-loop\\scripts\\init-copilot.ps1",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_src": "skills_pua_learning_loop_scripts_init_copilot_ps1",
+      "_tgt": "init_copilot_relative_orempty",
+      "source": "skills_pua_learning_loop_scripts_init_copilot_ps1",
+      "target": "init_copilot_relative_orempty",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": []
+}

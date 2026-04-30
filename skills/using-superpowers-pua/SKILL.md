@@ -76,6 +76,7 @@ description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when 
 | 出现 Bug / 失败 / 异常行为 | `systematic-debugging-pua` |
 | 当前会话执行计划 | `subagent-driven-development-pua` 或 `executing-plans-pua` |
 | 准备宣称完成 | `verification-before-completion-pua` |
+| AI 回答质量可疑 / 连续失败 2+ 次 / 输出疑似幻觉 | `llm-degradation-detector`（推理能力自检 + 跑分） |
 
 ## 立即调用 `pua-escalation` 的触发条件
 

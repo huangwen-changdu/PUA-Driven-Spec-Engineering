@@ -25,7 +25,8 @@
 - `receiving-code-review-pua`
 - `verification-before-completion-pua`
 - `finishing-a-development-branch-pua`
-
+## 诊断工具
+- `llm-degradation-detector`（推理能力检测 + 幻觉专项 + 跑分基准 `/iq bench`）
 ## 现在已并入的“深度 PUA”规则
 - 三条红线：闭环意识 / 事实驱动 / 穷尽一切
 - Owner 四问：根因、影响、预防、证据

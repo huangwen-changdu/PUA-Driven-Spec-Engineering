@@ -71,6 +71,8 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
    - `pua-gate`（进入每个阶段前默认必经，普通问题轻量快放）
 9. 压力升级器：
    - `pua-escalation`（门禁要求升级时调用）
+10. 推理能力诊断：
+    - `llm-degradation-detector`（AI 质量可疑 / 幻觉 / 连续失败时，自检推理能力等级并跑分）
 
 ## `pua-gate` 与 `pua-escalation` 的定位
 
