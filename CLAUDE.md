@@ -59,6 +59,17 @@ R2+ 变更必须有 OpenSpec 文档落地，没有文档不允许开写。变更
 - 本文件的用户硬性规则和默认执行习惯在 `superpowers-pua` 流程内同样生效；技能流程是更具体的特例，不是替代。
 - 若技能流程与本文件看似有张力，优先采用"默认自主执行，特定场景按更具体技能收紧流程"的解释。
 
+## CodeBuddy 稳定触发说明
+
+**仅有 CLAUDE.md 不足以让 CodeBuddy 稳定触发 PUA 流程。** CodeBuddy 需要同时满足两个条件：
+
+1. **RULE.mdc 文件**：`.codebuddy/rules/pua-default-flow/RULE.mdc` 必须存在且 `alwaysApply: true`
+2. **CLAUDE.md 内容**：RULE.mdc 中必须包含完整的协作规范内容（不能只有 `use_skill` 调用指令）
+
+本仓库已在 `.codebuddy/rules/pua-default-flow/RULE.mdc` 中配置完整规范。新环境拉取仓库后，CodeBuddy 开启新会话即自动生效，无需额外配置。
+
+> 验证方式：新开一个 CodeBuddy 会话，问"当前应用了哪些规则？"，预期响应包含 `default-agent-flow` / `全局默认 AI 协作流程`。
+
 ## .copilot 项目学习库
 
 本项目的 AI 学习沉淀位于 `.copilot/`，用于防止重复踩坑。

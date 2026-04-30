@@ -132,27 +132,28 @@ After installing, verify the skills are discoverable with `list skills`, then tr
 
 If you want the workflow to run automatically in CodeBuddy, add an always-on Rule. Skills being listed means they are discoverable; it does not by itself force every conversation to start from `using-superpowers-pua`.
 
+> **⚠️ 稳定触发说明**：仅配置单行 `use_skill("using-superpowers-pua")` 的最小 RULE.mdc **不足以**稳定触发 PUA 流程。需要同时满足：
+> 1. RULE.mdc 存在且 `alwaysApply: true`
+> 2. RULE.mdc 内容包含完整协作规范（不能只有单行 `use_skill` 指令）
+>
+> 本仓库已在 `.codebuddy/rules/pua-default-flow/RULE.mdc` 中提供完整模板，直接使用即可。
+
 CodeBuddy Rules use `RULE.mdc` files:
 
 ```text
-# Project-level, shared via Git
-.codebuddy/rules/default-agent-flow/RULE.mdc
+# Project-level, shared via Git（推荐：本仓库已内置）
+.codebuddy/rules/pua-default-flow/RULE.mdc
 
 # User-level, personal/global; actual path may vary by OS/client
 ~/.codebuddy/rules/default-agent-flow/RULE.mdc
 ```
 
-A minimal always-on rule frontmatter is:
+推荐直接使用本仓库内置的完整模板（已包含所有协作规范）：
 
-```markdown
----
-description: 全局默认 AI 协作流程
-alwaysApply: true
-enabled: true
-provider:
----
-
-每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`。
+```bash
+# 已内置于本仓库，无需额外操作
+# 验证：新开 CodeBuddy 会话，问"当前应用了哪些规则？"
+# 预期响应包含：default-agent-flow / 全局默认 AI 协作流程
 ```
 
 ### Option D: Per-Project basic rules
@@ -224,7 +225,9 @@ Use this checklist after any LLM-assisted installation:
 ### CodeBuddy
 - **Discover**: install skills under `.codebuddy/skills/` or `~/.codebuddy/skills/`, then run `list skills`
 - **Full-suite trigger**: `use_skill("using-superpowers-pua")`
-- **Auto workflow**: add an always-on CodeBuddy Rule such as `.codebuddy/rules/default-agent-flow/RULE.mdc` or user-level `~/.codebuddy/rules/default-agent-flow/RULE.mdc`; installing skills alone is not enough to force automatic execution.
+- **Auto workflow**: use `.codebuddy/rules/pua-default-flow/RULE.mdc`（本仓库已内置完整版）；仅配置单行 `use_skill` 的最小规则**不稳定**，必须包含完整协作规范内容
+- **风险等级快速定调**: 需求前加 `R0:`/`R1:`/`R2:`/`R3:`/`R4:` 直接定调，跳过自动风险评估
+- **Proposal 路径选择**: 高风险需求完成 Proposal 确认后，AI 会暂停询问选 A（完整 Specs）或 B（writing-plans 快速路径）
 
 ### Pressure triggers (auto-escalate)
 - Chinese: `加油` `别偷懒` `你再试试` `为什么还不行` `又错了` `换个方法`

@@ -77,6 +77,29 @@ Proposal ─────→ Specs ─────→ Design ─────→ T
 - 如果用户对范围有异议，修改 proposal 后重新确认
 - 复合升级命中时，proposal 必须包含 Risk Assessment 章节
 
+### Proposal 确认后：路径选择门控
+
+**Proposal 确认后，AI 必须暂停并向用户提出路径选择，不得自动推进到 Specs。**
+
+输出以下选项让用户选择：
+
+```
+📋 Proposal 已确认。请选择后续推进路径：
+
+A. 完整 Specs 路径（推荐高风险 / 需求边界模糊时）
+   → 逐项澄清需求边界、验收标准、非目标，确保实现前规范清晰
+
+B. writing-plans 快速路径（适合需求已清晰的低风险变更）
+   → 跳过 Specs，直接进入 writing-plans-pua 生成实现计划
+
+请选择 A 或 B：
+```
+
+- 用户选择 **A**：继续进入第二层 Specs，逐项深度澄清核心细节
+- 用户选择 **B**：退出 brainstorming-pua，直接进入 `writing-plans-pua`
+- 用户未明确选择时：等待用户响应，不得自行推进
+- **R3+ 风险时不得提供 B 选项**：高风险变更必须走完整 Specs + Design 流程
+
 ### 第二层：Specs（需求规范）
 
 **回答的问题**：需求边界？验收标准？什么不做？
