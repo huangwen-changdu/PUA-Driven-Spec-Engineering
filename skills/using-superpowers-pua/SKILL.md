@@ -11,7 +11,7 @@ description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when 
 
 **核心原则：** 只要有对应技能，就先加载技能，再开始行动。压力不是跳流程的理由；任务进入后先经过 `pua-gate`，普通问题 G0/G1 可内联快放，门禁要求升级时再调用 `pua-escalation` 收紧流程。
 
-**PUA references 开关：** 默认 `PUA_REFERENCES=OFF`。关闭时只保留轻量微标和核心行为约束，不强制读取 reference 文件。用户说"开启 PUA references"或配置 `PUA_REFERENCES=ON` 时，进入本入口后必须读取 `pua/references/display-protocol.md`、`pua/references/methodology-router.md`、`pua/references/flavors.md`，并按任务味道读取对应 `pua/references/methodology-{company}.md`。
+**PUA references 开关：** 默认 `PUA_REFERENCES=OFF`。关闭时只保留轻量微标和核心行为约束，不加载 reference 文件。用户说"开启 PUA references"或配置 `PUA_REFERENCES=ON` 时，启用 `pua/SKILL.md` 中的渐进式发现机制——references 在触发时机命中时按需加载（首个 G2+ 任务加载 display-protocol、味道切换时加载 methodology-router、用户问味道时加载 flavors 等），不一次全读。详见 `pua/SKILL.md` 的"📦 References 宝藏地图"。
 
 ## 第 0 步：自适应门禁
 

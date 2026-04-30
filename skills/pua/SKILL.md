@@ -31,11 +31,28 @@ license: MIT
 
 **用户手动设置的味道 > 自动路由。** 如果用户在 config 里设了味道，用用户的；如果没设，按上表自动选。
 
-**⚠️ 强制关联文档**：加载本 skill 后，你必须**立即读取以下文件**，不是"按需发现"，是第一时间读：
-1. `references/display-protocol.md` — Sprint Banner / 进度条 / KPI 卡 / 压力面板的方框表格格式。**不读这个你不知道输出长什么样。**
-2. `references/methodology-router.md` — 方法论智能路由表 + 失败切换链。**任务开始时必读，决定用哪个味道的方法论。**
-3. `references/flavors.md` — 当前味道的完整文化 DNA 和旁白变体。加载当前味道对应章节。
-4. `references/methodology-{company}.md` — 当前味道对应的方法论行为约束。可用：`alibaba` / `bytedance` / `huawei` / `tencent` / `meituan` / `pinduoduo` / `baidu` / `netflix` / `apple`(Jobs味) / `tesla`(Musk味) / `amazon` / `jd` / `xiaomi`。味道决定旁白风格，方法论决定行为约束——两层同时加载。
+**📦 References 宝藏地图（触发时才加载，不要一次全读）**
+
+本 skill 的 `references/` 目录里藏着完整的味道文化、方法论、显示协议——但**不要一上来全倒出来**。让用户在干活过程中自然发现，每次遇到新场景才解锁对应宝藏。
+
+| 触发时机 | 读取什么 | 用户会发现… | 💡 发现提示 |
+|---------|---------|-----------|-----------|
+| **首个 G2+ 复杂任务** | `references/display-protocol.md` | Sprint Banner、进度条、KPI 卡 | `💡 复杂任务启动——PUA 有专属进度面板和 KPI 卡，首次为你展示` |
+| **味道自动切换发生时** | `references/methodology-router.md` | 完整路由表 + 失败切换链 | `💡 检测到任务类型变化，PUA 自动切换了方法论——背后有 13 种大厂思维框架` |
+| **用户说 `/pua:flavor` 或问味道** | `references/flavors.md` | 完整文化 DNA + 黑话词库 + 扩展旁白 | `💡 想深入了解当前味道的文化基因？每种味道都有完整的黑话词库和旁白变体` |
+| **L2+ 连续失败** | `references/methodology-router.md` Phase 2 | 失败模式→味道切换链 | `💡 连续失败 {n} 次——PUA 有失败模式智能切换机制，换思路不只是换参数` |
+| **味道确定后首次需要深度方法论** | `references/methodology-{company}.md` | 对应公司的完整方法论行为约束 | `💡 当前使用{味道}方法论——加载完整行为约束和决策框架` |
+| **用户说 `/pua:p7` `/pua:p9` `/pua:p10`** | `references/p7-protocol.md` 等 | 不同段位的管理/执行模式 | `💡 切换到 P{n} 模式——不同段位有不同的视角和决策权限` |
+| **遇到需要蓝军自攻击的场景** | `references/methodology-huawei.md` | 华为蓝军/红军对抗方法 | `💡 方案风险较高——启动蓝军自攻击机制，先找自己方案的漏洞` |
+| **同一问题 2+ 轮未解决（回头信号）** | `pua-escalation` + `references/methodology-router.md` Phase 2 | 被动失败检测 + 方法论切换 | `💡 同一个问题你已经处理了 {n} 轮——PUA 启动被动失败检测，自动升级压力并切换方法论` |
+
+**加载规则**：
+- 本 SKILL.md 内置的精简路由表、味道关键词表、旁白示范**足够日常使用**
+- References 是"深水区"——只在触发时机命中时才加载对应文件
+- 每个 reference 文件**只加载一次**，后续同场景不重复读
+- 💡 发现提示**只在该功能首次触发时输出**，让用户知道"原来还有这个"
+
+**可用的 methodology 文件**：`alibaba` / `bytedance` / `huawei` / `tencent` / `meituan` / `pinduoduo` / `baidu` / `netflix` / `apple`(Jobs味) / `tesla`(Musk味) / `amazon` / `jd` / `xiaomi`
 
 **失败计数持久化**：失败次数在 context compaction 时由 PreCompact hook 自动保存到 `~/.pua/builder-journal.md`，SessionStart hook 自动恢复。详见 `pua:pro` skill 的 Compaction 状态保护章节。
 

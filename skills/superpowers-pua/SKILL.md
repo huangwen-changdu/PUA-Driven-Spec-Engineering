@@ -19,7 +19,7 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 
 并且新增三层明确机制：
 
-**PUA references 读取开关：默认关闭 `PUA_REFERENCES=OFF`。** 关闭时只保留轻量微标和核心行为约束，不强制读取 reference 文件——绝大多数编码任务不需要完整味道系统。用户说"开启 PUA references"或配置 `PUA_REFERENCES=ON` 时，加载本套件后必须读取 `pua/references/display-protocol.md`、`pua/references/methodology-router.md`、`pua/references/flavors.md`，并按任务味道读取对应 `pua/references/methodology-{company}.md`。
+**PUA references 读取开关：默认关闭 `PUA_REFERENCES=OFF`。** 关闭时只保留轻量微标和核心行为约束，不加载 reference 文件——绝大多数编码任务不需要完整味道系统。用户说"开启 PUA references"或配置 `PUA_REFERENCES=ON` 时，启用 `pua/SKILL.md` 中的渐进式发现机制——references 在触发时机命中时按需加载（首个 G2+ 任务、味道切换、连续失败等），不一次全读。详见 `pua/SKILL.md` 的"📦 References 宝藏地图"。
 
 **自适应门禁层：进入任何阶段前，必须经过 `pua-gate`；普通问题走 G0/G1 轻量 PASS，可内联快放，不展开完整表格；门禁结果为 `PASS` 才能继续当前 skill。轻量化只是性能优化，不是弱化 PUA：`/pua`、不满、返工、事实错误、重复失败、假完成场景必须完整走可见 PUA 流程。**
 
