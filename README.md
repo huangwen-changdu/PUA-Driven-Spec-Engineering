@@ -78,13 +78,14 @@ LLM 编码时的常见问题：
 
 ## Install
 
-Supports three AI coding platforms, but the activation model is different on each platform:
+Supports four AI coding platforms, but the activation model is different on each platform:
 
 | Platform | Skill Support | Instructions File | Important |
 |----------|--------------|-------------------|-----------|
 | **Claude Code** | Full `SKILL.md` + references | `CLAUDE.md` / `.claude/instructions.md` | Install skills **and** add the entry instruction |
-| **OpenAI Codex CLI** | No `SKILL.md`; Markdown rules only | `AGENTS.md` | Do **not** copy `skills/`; use AGENTS rules |
-| **CodeBuddy** | Skills via `.codebuddy/skills/` | Rules: `.codebuddy/rules/<name>/RULE.mdc` or user rules | Installing skills makes them discoverable; auto workflow needs an always-on Rule or manual trigger |
+| **OpenAI Codex CLI** | No `SKILL.md`; Markdown rules only | `AGENTS.md` | Must inline **full rules**; single-line `use_skill` does nothing in Codex |
+| **CodeBuddy** | Skills via `.codebuddy/skills/` | Rules: `.codebuddy/rules/<name>/RULE.mdc` or user rules | RULE.mdc must contain **full spec content**, not just `use_skill`; project template included |
+| **GitHub Copilot** | No `SKILL.md`; Markdown rules only | `.github/copilot-instructions.md` | No `use_skill` runtime; inline full rules; auto-applied to all VS Code Copilot Chat sessions |
 
 ### Option A: Claude Code
 
@@ -106,13 +107,17 @@ Installing the 20 skills without this instruction only makes them available; it 
 
 ### Option B: OpenAI Codex CLI
 
-Codex does **not** load `skills/*/SKILL.md`. Use plain Markdown `AGENTS.md` rules instead. See [AGENTS.md](./AGENTS.md) section 2 for the Codex-specific configuration template.
+Codex does **not** load `skills/*/SKILL.md` and has no `use_skill` runtime. Use plain Markdown `AGENTS.md` rules instead.
+
+> **⚠️ 稳定触发说明**：在 `AGENTS.md` 中只写 `use_skill("using-superpowers-pua")` **没有任何效果**，Codex 无法执行该指令，也不加载 `SKILL.md` 文件。需要将完整的 PUA 规则**内联写入** `AGENTS.md`，规则才会生效。
+>
+> 最小可触发配置：`AGENTS.md` 中必须包含三维门禁规则、路由表和编码准则全文，而不是只写一行入口指令。
 
 Quick setup:
 ```bash
 mkdir -p ~/.codex
-# Then write the minimal PUA rules from AGENTS.md into ~/.codex/AGENTS.md,
-# or place them in your project's AGENTS.md.
+# 将完整 PUA 规则从 AGENTS.md 模板内联写入 ~/.codex/AGENTS.md
+# 或放在项目 AGENTS.md 中（见下方 AGENTS.md Template 章节）
 ```
 
 ### Option C: CodeBuddy
@@ -165,30 +170,107 @@ curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/PUA-Driven-Spec
 
 For Codex CLI, use `AGENTS.md` instead of `CLAUDE.md`. For CodeBuddy, use `.codebuddy/rules/<name>/RULE.mdc` or a user rule such as `~/.codebuddy/rules/default-agent-flow/RULE.mdc`, plus `.codebuddy/skills/` and an explicit `use_skill("using-superpowers-pua")` trigger for verification.
 
+### Option E: GitHub Copilot
+
+GitHub Copilot（VS Code）通过 `.github/copilot-instructions.md` 自动加载仓库级规范，无需每次手动触发。Copilot **不支持** `use_skill()` 指令，也不加载 `SKILL.md` 文件，规则必须内联写入指令文件。
+
+> **⚠️ 稳定触发说明**：仅写一行 `use_skill("using-superpowers-pua")` 对 GitHub Copilot **无效**。必须将完整的 PUA 协作规范内联写入 `.github/copilot-instructions.md`，Copilot 才会在每次会话中自动应用。
+
+```bash
+# 创建 GitHub Copilot 仓库级指令文件
+mkdir -p .github
+```
+
+然后将以下内容写入 `.github/copilot-instructions.md`：
+
+```markdown
+# 仓库协作规范（PUA-Driven Spec Engineering）
+
+## 默认 AI 协作流程
+
+本项目采用三维自适应门禁流程。每次接到任务后，先经过门禁判断再行动：
+
+- **G0/G1**：普通问题轻量快放，输出一行微标 `🟠 PUA · G0/G1 · {约束}`
+- **G2**：多步骤/跨文件任务，列关键风险和硬约束
+- **G3/ESCALATE**：需求成熟度 ≤ 4 或高风险变更，输出 PUA 旁白 + 立即行动
+- **G4/BLOCKED**：需求几乎空白，停止推进，问一个最小澄清问题
+
+## 三维门禁评估
+
+最终档位 = max(成熟度档位, 变更风险档位) + 复合升级：
+
+- **需求成熟度**（0-10 分）：目标/约束/影响面/唯一性/实现路径，每项 0-2 分
+- **变更风险等级**（R0-R4）：数据持久化/资金权益/权限认证/核心流程/跨服务/数据迁移
+- **复合升级**：高风险(R2+) + 不清晰(成熟度≤6) + 大影响(3+文件)，命中 2+ 额外升档
+
+## 风险等级快速定调
+
+消息以 `R0:`/`R1:`/`R2:`/`R3:`/`R4:` 开头，直接定调跳过自动评估。
+
+## 路由规则
+
+任一命中即进入设计阶段（先澄清再动手）：
+- 需求成熟度 ≤ 6
+- 新功能 / 新模块 / 新 API / 架构变更
+- 变更风险 ≥ R2
+
+设计阶段采用 OpenSpec SDD 四层渐进确认：Proposal → （路径选择 A/B）→ Specs → Design → Tasks。
+Proposal 确认后暂停询问用户：A（完整 Specs 深度澄清）或 B（直接进 writing-plans 快速路径）。R3+ 只提供 A。
+
+## 编码准则（Karpathy Guidelines）
+
+- 外科手术式修改：只改被要求改的，不顺手重构
+- 可验证目标：每个任务必须有可检验的完成标准
+- 事实驱动：没有查证的归因叫猜，没有验证的完成叫自嗨
+- 先查后问：信息不足先搜索，只把真正卡住的最小问题抛给用户
+
+## 用户硬性规则
+
+- 默认简体中文；代码/命令/路径/标识符保持原文
+- 最小范围修改，只补必要注释
+- 默认自主执行到可交付结果；只在真正模糊/危险操作前提问
+```
+
+如需更细粒度控制，可用 `.github/instructions/*.instructions.md`（支持 `applyTo` frontmatter）：
+
+```markdown
+---
+applyTo: "**"
+---
+# 规范内容（同上）
+```
+
+验证方式：在 VS Code Copilot Chat 中问"当前应用了哪些指令？"，预期响应中提及 `copilot-instructions.md` 中的规范内容。
+
 ## Activation Checklist
 
 Use this checklist after any LLM-assisted installation:
 
-1. **Skills are installed in a platform-supported path**
+1. **Rules/skills are installed in a platform-supported path**
    - Claude Code: `~/.claude/skills/<skill-name>/SKILL.md`
    - CodeBuddy: `.codebuddy/skills/<skill-name>/SKILL.md` or `~/.codebuddy/skills/<skill-name>/SKILL.md`
-   - Codex CLI: no `SKILL.md` runtime; use `AGENTS.md`
-2. **The suite entry is explicit**
+   - Codex CLI: no `SKILL.md` runtime; full rules inlined in `AGENTS.md`
+   - GitHub Copilot: no `SKILL.md` runtime; full rules inlined in `.github/copilot-instructions.md`
+2. **The rules content is complete, not just an entry pointer**
+   - Claude Code / CodeBuddy: `use_skill("using-superpowers-pua")` in `CLAUDE.md` or `RULE.mdc` (RULE.mdc must also contain full spec)
+   - Codex CLI / GitHub Copilot: full PUA rules inlined — a single `use_skill` line does **nothing** on these platforms
+3. **The suite entry is explicit (Claude Code / CodeBuddy only)**
    - Full workflow entry: `use_skill("using-superpowers-pua")`
    - Core flavor only: `pua`
-3. **The model can discover the skills**
-   - In CodeBuddy, run `list skills` and confirm `using-superpowers-pua`, `pua-gate`, and `pua-escalation` are listed.
-4. **The first assistant action proves routing works**
-   - Expected: the assistant loads `using-superpowers-pua`, then runs `pua-gate`.
-   - If it only loads `pua`, the flavor layer is working but the full suite is not routed correctly.
-5. **A pressure trigger escalates**
+4. **The model can discover the skills (CodeBuddy only)**
+   - Run `list skills` and confirm `using-superpowers-pua`, `pua-gate`, and `pua-escalation` are listed.
+5. **The first assistant action proves routing works**
+   - Expected: gate micro-badge appears (`🟠 PUA · ...`) on first response.
+   - Claude Code / CodeBuddy: assistant loads `using-superpowers-pua`, then runs `pua-gate`.
+   - Codex / GitHub Copilot: assistant applies inline rules and shows gate badge.
+6. **A pressure trigger escalates**
    - Send: `换个方法，这个问题不能空口完成`
-   - Expected: visible `pua-gate` / `pua-escalation` behavior and a concrete fact-finding action.
+   - Expected: visible gate / escalation behavior and a concrete fact-finding action.
 
 ## Environment Configuration
 
 ### Required
-- One of: Claude Code CLI v1.0.26+, OpenAI Codex CLI, or CodeBuddy
+- One of: Claude Code CLI v1.0.26+, OpenAI Codex CLI, CodeBuddy, or GitHub Copilot (VS Code)
 
 ### Optional (Claude Code & CodeBuddy)
 - **PUA Flavor Config**: `~/.pua/config.json`
@@ -220,7 +302,7 @@ Use this checklist after any LLM-assisted installation:
 ### Codex CLI
 - **Auto**: PUA rules in `AGENTS.md` are loaded automatically
 - **Manual**: "按照 AGENTS.md 中的 PUA 流程约束执行"
-- **Note**: Codex has no `use_skill` runtime and will not load `SKILL.md` files.
+- **Note**: Codex has no `use_skill` runtime and will not load `SKILL.md` files. A single `use_skill` line in `AGENTS.md` does nothing — must inline full rules.
 
 ### CodeBuddy
 - **Discover**: install skills under `.codebuddy/skills/` or `~/.codebuddy/skills/`, then run `list skills`
@@ -228,6 +310,13 @@ Use this checklist after any LLM-assisted installation:
 - **Auto workflow**: use `.codebuddy/rules/pua-default-flow/RULE.mdc`（本仓库已内置完整版）；仅配置单行 `use_skill` 的最小规则**不稳定**，必须包含完整协作规范内容
 - **风险等级快速定调**: 需求前加 `R0:`/`R1:`/`R2:`/`R3:`/`R4:` 直接定调，跳过自动风险评估
 - **Proposal 路径选择**: 高风险需求完成 Proposal 确认后，AI 会暂停询问选 A（完整 Specs）或 B（writing-plans 快速路径）
+
+### GitHub Copilot
+- **Auto**: `.github/copilot-instructions.md` 自动应用于 VS Code Copilot Chat 所有会话
+- **Scoped**: `.github/instructions/*.instructions.md`（frontmatter `applyTo: "**"` 全局生效）
+- **Note**: 不支持 `use_skill()` 指令；规则必须内联写入指令文件，不能只写入口指令
+- **风险等级快速定调**: 同 CodeBuddy，消息以 `R0:`/`R1:`/`R2:`/`R3:`/`R4:` 开头直接定调
+- **验证**: 在 VS Code Copilot Chat 中问"当前有哪些指令？"，预期响应中体现 PUA 门禁规范
 
 ### Pressure triggers (auto-escalate)
 - Chinese: `加油` `别偷懒` `你再试试` `为什么还不行` `又错了` `换个方法`
