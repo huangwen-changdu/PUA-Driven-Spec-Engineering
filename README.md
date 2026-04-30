@@ -87,6 +87,25 @@ Supports four AI coding platforms, but the activation model is different on each
 | **CodeBuddy** | Skills via `.codebuddy/skills/` | Rules: `.codebuddy/rules/<name>/RULE.mdc` or user rules | RULE.mdc must contain **full spec content**, not just `use_skill`; project template included |
 | **GitHub Copilot** | No `SKILL.md`; Markdown rules only | `.github/copilot-instructions.md` | No `use_skill` runtime; inline full rules; auto-applied to all VS Code Copilot Chat sessions |
 
+### 推荐规则文件路径（优先级说明）
+
+各平台均支持**用户级**和**项目级**两种路径。优先选用户级，个人全局生效、无需每个仓库重复配置；项目级用于团队共享或仓库定制覆盖。
+
+| 平台 | ① 用户级（推荐首选） | ② 项目级（团队共享/仓库覆盖） |
+|------|---------------------|-------------------------------|
+| **Claude Code** | `~/.claude/CLAUDE.md` 或 `~/.claude/instructions.md` | 项目根目录 `CLAUDE.md` 或 `.claude/instructions.md` |
+| **OpenAI Codex CLI** | `~/.codex/AGENTS.md` | 项目根目录 `AGENTS.md` |
+| **CodeBuddy** | `~/.codebuddy/rules/pua-default-flow/RULE.mdc` | `.codebuddy/rules/pua-default-flow/RULE.mdc`（本仓库已内置） |
+| **GitHub Copilot** | VS Code 用户 `settings.json`（`github.copilot.chat.codeGeneration.instructions`） | `.github/copilot-instructions.md`（项目根） |
+
+> **用户级优先**：用户级规则对该机器上所有项目生效，避免每个仓库重复配置。项目级规则在用户级之上叠加，可覆盖或补充。当两级规则并存时，平台通常合并加载（以平台行为为准）。
+>
+> **Windows 路径示例**：
+> - Claude Code 用户级：`C:\Users\<you>\.claude\CLAUDE.md`
+> - CodeBuddy 用户级：`C:\Users\<you>\.codebuddy\rules\pua-default-flow\RULE.mdc`
+> - Codex 用户级：`C:\Users\<you>\.codex\AGENTS.md`
+> - GitHub Copilot 用户级：VS Code → 设置 → 搜索 `copilot instructions` → `github.copilot.chat.codeGeneration.instructions`
+
 ### Option A: Claude Code
 
 ```bash
