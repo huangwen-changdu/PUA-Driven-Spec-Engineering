@@ -67,6 +67,24 @@ Copy-Item -Recurse -Force skills\* "$env:USERPROFILE\.claude\skills\"
 
 否则模型可能只在压力词命中时加载 `pua` 核心味道层，而不会稳定进入 `pua-gate` / `pua-escalation` 的完整套件流程。
 
+#### karpathy-guidelines：编码行为准则（重要）
+
+`karpathy-guidelines` 是独立于 PUA 套件的编码行为 skill，专门防止 LLM 常见编码劣化——过度工程、顺手重构、无证据交付。
+
+**触发时机**：首次涉及写代码、review 或重构时，执行：
+
+```
+use_skill("karpathy-guidelines")
+```
+
+**四条核心准则**：
+1. **先想后写**：不假设、不隐藏困惑。有多种解读时列出来，不确定时停下问
+2. **简单优先**：最小代码解决问题。没被要求的功能不加、没被要求的抽象不做
+3. **外科手术式修改**：只动必须动的。不改相邻代码、不重构没坏的东西、匹配现有风格
+4. **目标驱动**：定义可验证的成功标准。"修好 bug" → 先写复现测试，再让它通过
+
+> **与 PUA 套件的关系**：`pua-gate` 负责门禁和流程纪律，`karpathy-guidelines` 负责编码行为准则，两者互补。`using-superpowers-pua` 不会自动加载 `karpathy-guidelines`，需要显式触发。
+
 **方式 B：仅项目级使用**
 
 将 `CLAUDE.md` 复制到项目根目录即可获得基础 PUA 流程约束（三条红线、门禁规则、编码准则）。如需完整技能（方法论、味道系统、学习闭环），仍需按方式 A 安装 skills。
@@ -817,3 +835,53 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 1. VS Code → 设置 → 搜索 `github.copilot.chat.codeGeneration.instructions`
 2. 确认规则内容已添加（非空）
 3. 重新打开 Copilot Chat 会话
+
+---
+
+## 七、安装后最值得做的三件事
+
+完成任意平台的安装配置后，按顺序做这三件事，可以验证套件真正生效，同时让日常使用立即获益。
+
+### 第一件：验证完整套件能触发门禁
+
+发送一条简单消息，确认 AI 会输出 PUA 微标并经过门禁：
+
+```
+帮我把这个变量名改得更清楚一些
+```
+
+**预期响应**：开头出现 `🟠 PUA · ... · G0 · ...` 微标，说明 `pua-gate` 已加载并正常工作。
+
+如果没有出现微标，检查：
+- Claude Code / CodeBuddy：确认 `use_skill("using-superpowers-pua")` 已写入入口指令
+- Codex CLI / GitHub Copilot：确认指令文件内容包含完整规范（不是单行指令）
+
+### 第二件：用风险等级前缀发一个真实需求
+
+体验"直接定调"功能，感受不同等级的路由差异：
+
+```
+R0: 帮我补充一下这个函数的注释
+```
+
+```
+R2: 需要给用户表新增一个 last_login_at 字段
+```
+
+**预期行为**：
+- `R0:` → AI 直接轻量执行，无需设计流程
+- `R2:` → AI 进入 brainstorming-pua，输出 Proposal 并暂停确认路径选择（A/B）
+
+这是最快感受流程差异的方式，也能帮你校准日常哪些需求需要写 `R2:`/`R3:` 前缀。
+
+### 第三件：首次写代码时显式加载 karpathy-guidelines
+
+在开始第一个真实编码任务前，发送：
+
+```
+use_skill("karpathy-guidelines")
+```
+
+**预期行为**：AI 加载四条编码行为准则（先想后写、简单优先、外科手术式修改、目标驱动），并在后续代码任务中自动遵循。
+
+这一步很多人会跳过，导致 AI 顺手重构了不该动的代码，或加了没要求的功能。一次加载，当次会话持续生效。
