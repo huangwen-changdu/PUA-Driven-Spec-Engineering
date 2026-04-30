@@ -1,11 +1,11 @@
 # PUA-Driven Spec Engineering
 
-> A comprehensive Claude Code skill suite for high-agency, exhaustive problem-solving with adaptive PUA pressure.
+> 一套面向所有开发者的**公开多平台 AI 协作技能框架**，支持 Claude Code、OpenAI Codex CLI、CodeBuddy 和 GitHub Copilot 四个平台。通过自适应门禁、OpenSpec SDD 渐进确认和 Karpathy 编码准则，让 AI 编码助手更严谨、更可控。
 
 
 ## What Is This
 
-一套基于 Claude Code Skill 系统的 **PUA 驱动规格工程** 技能套件。核心思路：
+一套面向**所有开发者**的 **PUA 驱动规格工程** 技能套件——无论你用哪个 AI 编码平台，都可以拿来用。核心思路：
 
 - **自适应门禁**：普通问题 G0/G1 轻量快放，高压问题走完整 PUA 流程
 - **三层机制**：主流程层 → 门禁层 → 条件升级层
@@ -359,10 +359,14 @@ Quick template:
 - **复合升级**：高风险 + 不清晰 + 大影响，命中 2+ 维度额外升档
 
 ## OpenSpec 四层渐进确认
-变更风险 ≥ R2 时，做一步确认一步：Proposal → Specs → Design → Tasks
+变更风险 ≥ R2 时，做一步确认一步：Proposal → (路径选择 A/B) → Specs → Design → Tasks
+Proposal 确认后询问：A（完整 Specs 深度澄清）或 B（直接 writing-plans 快速路径）。R3+ 只提供 A。
 
-## 编码准则
-- 编码行为准则由 `karpathy-guidelines` skill 定义，首次涉及写代码时执行 `use_skill("karpathy-guidelines")` 获取完整规则
+## 编码准则（karpathy-guidelines）
+1. 先想后写：声明假设，不确定时停下问；多种解读时列出来
+2. 简单优先：最小代码解决问题。没被要求的功能不加
+3. 外科手术式修改：只动被要求动的，不顺手改相邻代码
+4. 目标驱动：先定可验证的成功标准，"修好 bug"→先写复现测试
 
 ## 用户硬性规则
 - 默认使用简体中文；代码、命令、路径、标识符保持原文
@@ -430,10 +434,55 @@ PUA-Driven-Spec-Engineering/
 │   ├── karpathy-guidelines/    # Coding behavioral guidelines
 │   ├── agent-customization-pua/ # + 6 reference docs
 │   └── superpowers-pua-suite/  # Suite README
-├── AGENTS.md                 # How to integrate with your project
-├── CLAUDE.md                 # Per-project default instructions
+├── .codebuddy/
+│   └── rules/pua-default-flow/RULE.mdc   # CodeBuddy 项目级规则（alwaysApply）
+├── .github/
+│   └── copilot-instructions.md           # GitHub Copilot 仓库级指令（自动加载）
+├── docs/
+│   └── SETUP.md              # 完整安装配置指南（四平台详细说明）
+├── AGENTS.md                 # Codex CLI 精简规则文件（内联，~1.5KB）
+├── CLAUDE.md                 # Claude Code 项目级默认指令
 └── README.md                 # This file
 ```
+
+## Maintainer's Guide
+
+> 这是一个**公开项目**，面向所有 AI 编码平台的用户。维护时请牢记以下原则，避免踩坑。
+
+### 核心架构决策
+
+**两种激活模式，不能混淆：**
+
+| 模式 | 适用平台 | 文件 | 注意 |
+|------|----------|------|------|
+| **Skill 引用** | Claude Code、CodeBuddy | `SKILL.md` + `CLAUDE.md` 里 `use_skill()` | 需要先安装 skills 到对应目录 |
+| **内联规则** | Codex CLI、GitHub Copilot | `AGENTS.md`、`copilot-instructions.md` | 必须把完整规则内联，`use_skill()` 在这两个平台**无效** |
+
+**CodeBuddy 的特殊要求：** RULE.mdc 必须包含完整规范内容 + `alwaysApply: true`，仅写单行 `use_skill` 不稳定。
+
+### 规则文件同步原则
+
+当你更新核心规则（门禁逻辑、OpenSpec 流程、karpathy 准则）时，**所有四个平台的规则文件都要同步更新**：
+
+1. `CLAUDE.md` — Claude Code
+2. `AGENTS.md` — Codex CLI
+3. `.codebuddy/rules/pua-default-flow/RULE.mdc` — CodeBuddy
+4. `.github/copilot-instructions.md` — GitHub Copilot
+
+**不允许只更新 SKILL.md 而不同步**。Skill 文件是 Claude Code / CodeBuddy 的权威来源，但内联规则文件是 Codex / Copilot 的唯一来源。
+
+### 安装指南维护
+
+- **`docs/SETUP.md`**：人类阅读的完整安装指南，面向新用户。更新平台支持或安装步骤时在这里改。
+- **`README.md`**：项目概览，保持简洁，细节放 `docs/SETUP.md`。
+- **`AGENTS.md`**：Codex 精简规则，控制在 3KB 以内（32KB 预算，要给项目自定义留空间）。
+
+### 新增平台支持步骤
+
+1. 在 `README.md` Install 表格增加一行
+2. 在 `docs/SETUP.md` 增加对应安装章节
+3. 创建平台规则文件（内联完整规则）
+4. 验证：在该平台新开会话，确认 PUA 微标出现
 
 ## License
 

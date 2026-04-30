@@ -23,11 +23,12 @@
 变更风险 ≥ R2 时，brainstorming-pua 按 OpenSpec 规范驱动开发流程推进，**做一步确认一步**：
 
 1. **Proposal**（`openspec/changes/{name}/proposal.md`）：为什么改、改什么、影响谁 → 用户确认
-2. **Specs**（`openspec/changes/{name}/specs/spec.md`）：需求边界、验收标准、非目标 → 用户确认
-3. **Design**（`openspec/changes/{name}/design.md`）：方案对比、技术设计、接口定义 → 用户确认（R3+ 含回滚方案，R4 含影响面分析）
-4. **Tasks**（`openspec/changes/{name}/tasks.md`）：实现清单、执行顺序、验证计划 → 用户确认
+2. **路径选择**（Proposal 确认后）：A（完整 Specs 深度澄清）或 B（直接 writing-plans 快速路径）→ 用户选择；R3+ 只提供 A
+3. **Specs**（`openspec/changes/{name}/specs/spec.md`）：需求边界、验收标准、非目标 → 用户确认（仅选 A 时执行）
+4. **Design**（`openspec/changes/{name}/design.md`）：方案对比、技术设计、接口定义 → 用户确认（R3+ 含回滚方案，R4 含影响面分析）
+5. **Tasks**（`openspec/changes/{name}/tasks.md`）：实现清单、执行顺序、验证计划 → 用户确认
 
-**前一层未确认，后一层无法正确生成。** 不允许一次输出全部四层文档。
+**前一层未确认，后一层无法正确生成。** 不允许一次输出全部文档。
 
 ### 多轮澄清协议
 
@@ -37,9 +38,16 @@
 
 R2+ 变更必须有 OpenSpec 文档落地，没有文档不允许开写。变更完成后归档至 `openspec/changes/archive/{date}-{name}/`。
 
-## 编码行为准则
+## 编码行为准则（karpathy-guidelines）
 
-编码行为准则由 `karpathy-guidelines` skill 定义，本文件不再内联。首次涉及写代码、review 或重构时，执行 `use_skill("karpathy-guidelines")` 获取完整规则。
+写代码、review 或重构时必须遵守：
+
+1. **先想后写**：声明假设，不确定时停下问；多种解读时列出来，不默默选一个
+2. **简单优先**：最小代码解决问题。没被要求的功能不加，没被要求的抽象不做
+3. **外科手术式修改**：只动被要求动的。不顺手改相邻代码，不重构没坏的东西，匹配现有风格
+4. **目标驱动**：先定可验证的成功标准。"修好 bug" → 先写复现测试，再让它通过
+
+> Claude Code 安装了 `karpathy-guidelines` skill 时，`use_skill("karpathy-guidelines")` 可加载完整版（含 tradeoff 说明）。
 
 ## 用户硬性规则
 
