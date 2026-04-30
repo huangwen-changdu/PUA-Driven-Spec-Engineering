@@ -343,7 +343,7 @@ Use this checklist after any LLM-assisted installation:
 
 ## AGENTS.md Template
 
-See [AGENTS.md](./AGENTS.md) for a complete guide on how to write your project's `AGENTS.md` to integrate this suite.
+See [docs/SETUP.md](./docs/SETUP.md) for a complete guide on how to configure all platforms to integrate this suite.
 
 Quick template:
 ```markdown
