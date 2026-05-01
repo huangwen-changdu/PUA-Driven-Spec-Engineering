@@ -1,6 +1,7 @@
 ---
 name: llm-degradation-detector
 description: "检测 LLM 当前逻辑推理能力等级。通过多维度自评指标和六级门槛体系，让当前 LLM 输出自己所处的推理能力等级。当用户怀疑 AI 在敷衍、降智、复读、绕圈时使用。触发词：降智检测、智力检查、你是不是降智了、IQ check、cognitive check、/iq、推理检测"
+updated: "2026-05-01"
 ---
 
 # LLM 逻辑推理能力检测器

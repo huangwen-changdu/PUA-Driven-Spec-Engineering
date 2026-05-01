@@ -44,37 +44,171 @@ LLM 编码时的常见问题：
 2. **事实驱动**：没有查证的归因，不叫判断
 3. **穷尽一切**：方法论没走完，不叫解决不了
 
-## Skill Suite (20 Skills)
+## Skill Suite (21 Skills)
 
-### Entry
-- `using-superpowers-pua` — 套件入口纪律
-- `superpowers-pua` — 总入口，完整生命周期定义
-- `pua-gate` — 自适应门禁
-- `pua-escalation` — 压力升级器
+> 按任务阶段分组，每个 skill 对应一个明确场景。⭐ 标记为项目特色技能，详见下方「特色技能详解」。
+>
+> **触发方式**：Claude Code / CodeBuddy 用 `use_skill("skill-name")`；Codex CLI / GitHub Copilot 规则内联生效，无需手动触发。
 
-### Design & Planning
-- `brainstorming-pua` — 需求澄清与方案设计（OpenSpec）
-- `using-git-worktrees-pua` — 隔离开发
-- `writing-plans-pua` — 设计转计划
+### 🚪 Entry — 入口与门禁
 
-### Implementation & Debugging
-- `test-driven-development-pua` — TDD 流程
-- `systematic-debugging-pua` — 系统化调试
-- `subagent-driven-development-pua` — 子 agent 执行
-- `dispatching-parallel-agents-pua` — 并行调度
-- `executing-plans-pua` — 单通道执行
+| Skill | 何时用 |
+|-------|--------|
+| `using-superpowers-pua` | 每次对话第一步；套件入口纪律，驱动门禁和路由 |
+| `superpowers-pua` | 需要了解完整生命周期定义时加载 |
+| `pua-gate` ⭐ | 每轮请求自动判断档位（G0-G4）；普通问题快放，高压问题升级，不制造多余流程感 |
+| `pua-escalation` ⭐ | 连续失败 2+ 次 / 用户不满 / 想跳步骤时；收紧流程，防止原地打转 |
 
-### Quality & Finish
-- `requesting-code-review-pua` — 发起 review
-- `receiving-code-review-pua` — 处理反馈
-- `verification-before-completion-pua` — 完成前验证
-- `finishing-a-development-branch-pua` — 分支收尾
+### 🎨 Design & Planning — 设计与规划
 
-### Auxiliary
-- `karpathy-guidelines` — 编码行为准则（防过度工程、外科手术式修改、可验证目标）
-- `pua` — 原版 PUA 核心（方法论、味道系统、12 家公司文化）
-- `pua-learning-loop` — 项目学习闭环
-- `agent-customization-pua` — Agent 定制化管理
+| Skill | 何时用 |
+|-------|--------|
+| `brainstorming-pua` ⭐ | 新功能 / 模糊需求 / 架构变更；OpenSpec 四层渐进确认，防止做错方向后大返工 |
+| `writing-plans-pua` | 需求已确认后；把设计文档转成带顺序、带验证点的可执行任务清单 |
+| `using-git-worktrees-pua` | 开始实现前；隔离开发分支，不弄脏当前工作区 |
+
+### 🔨 Implementation & Debugging — 实现与调试
+
+| Skill | 何时用 |
+|-------|--------|
+| `test-driven-development-pua` | 实现任何功能或修 Bug；先写复现测试，再让它通过，防止修了这里坏那里 |
+| `systematic-debugging-pua` ⭐ | Bug 排查 / 多次修复无效；假设列表 + 逐一证伪，禁止盲目补丁 |
+| `subagent-driven-development-pua` | 执行多步骤计划；子 agent 分工执行，减少上下文漂移 |
+| `dispatching-parallel-agents-pua` | 多个独立任务同时推进；并行调度提速，互不等待 |
+| `executing-plans-pua` | 单通道按计划执行；一步一确认，防止跳步骤 |
+
+### ✅ Quality & Finish — 质量与收尾
+
+| Skill | 何时用 |
+|-------|--------|
+| `requesting-code-review-pua` | 工作完成准备收尾前；规范发起 code review，不让隐患漏掉 |
+| `receiving-code-review-pua` | 收到 review 反馈后；区分"必须改"和"建议改"，拒绝无脑认同 |
+| `verification-before-completion-pua` ⭐ | 准备说"完成了"之前；必须有验证命令 + 真实输出，无证据不叫完成 |
+| `finishing-a-development-branch-pua` | 实现已验证后；规范收尾分支，不留半成品状态 |
+
+### 🔧 Auxiliary — 辅助工具
+
+| Skill | 何时用 |
+|-------|--------|
+| `karpathy-guidelines` | 写代码 / review / 重构时；防过度工程、外科手术式修改、先定可验证目标 |
+| `pua` | 需要大厂 PUA 风格加压时；12 家公司方法论 + 味道系统，激活高压执行模式 |
+| `pua-learning-loop` | 出现用户纠正 / 重复失败 / 可复用坑点时；记录经验，防下次再踩同一个坑 |
+| `agent-customization-pua` | 创建或修复 AI 配置文件（`.instructions.md`、`SKILL.md`、`RULE.mdc`）时 |
+| `llm-degradation-detector` ⭐ | 怀疑 AI 在降智 / 敷衍 / 绕圈时；发送 `/iq` 触发九维自评 + 推理等级报告（*updated: 2026-05-01*）|
+
+---
+
+## 特色技能详解
+
+### ⭐ `pua-gate` — 自适应门禁
+
+不是每个问题都需要走完整流程，`pua-gate` 按任务复杂度自动分档：
+
+| 档位 | 触发条件 | 执行方式 |
+|------|---------|---------|
+| **G0/G1** | 简单问题（改名、解释、单行修复） | 一行微标，直接执行 |
+| **G2** | 多步骤 / 跨文件任务 | 简版门禁，列关键约束后执行 |
+| **ESCALATE** | 连续失败 / 用户不满 / 高风险变更 | 调用 `pua-escalation` 收紧再继续 |
+| **BLOCKED** | 需求几乎空白 | 停止推进，问一个最小澄清问题 |
+
+**核心价值**：普通问题不走繁琐流程（不制造流程感），高压问题不跳步骤（不假完成）。每轮消息都重新判断档位，不允许以"上轮已过门禁"为由跳过。
+
+---
+
+### ⭐ `pua-escalation` — 压力升级引擎
+
+LLM 连续失败时最常见的问题是：换措辞但不换方案，原地打转。`pua-escalation` 提供五级压力等级和强制切换规则：
+
+| 等级 | 触发时机 | 强制行为 |
+|------|---------|---------|
+| E0 | 正常执行 | 无额外约束 |
+| E1 | 第 1 次失败 | 必须重新搜索 / 读文件再开口 |
+| E2 | 第 2 次失败 | 换本质不同的方案（换参数不叫换方案） |
+| E3 | 第 3 次失败 | 七项检查清单全部完成才能继续 |
+| E4 | 第 4+ 次失败 | 停止执行，等待人工介入 |
+
+**被动失败检测**：AI 不会主动承认失败。如果上轮说"完成"，但用户本轮还在说同一个问题——这就是失败，计数 +1，不允许装作是新问题。
+
+---
+
+### ⭐ `brainstorming-pua` — 需求澄清与方案设计
+
+新功能直接写代码是大多数返工的根源。本 skill 强制走 OpenSpec SDD 四层渐进确认，做一步确认一步，前一层未确认后一层无法开始：
+
+```
+Proposal → （路径选择 A/B）→ Specs → Design → Tasks
+```
+
+| 层 | 内容 | 产出 |
+|----|------|------|
+| Proposal | 为什么改、改什么、影响谁 | `openspec/changes/{name}/proposal.md` |
+| 路径选择 | A（深度澄清）或 B（快速路径）；R3+ 只提供 A | 用户选择确认 |
+| Specs | 需求边界、验收标准、非目标 | `specs/spec.md` |
+| Design | 方案对比、技术设计、接口定义 | `design.md` |
+| Tasks | 实现清单、执行顺序、验证计划 | `tasks.md` |
+
+**核心价值**：不允许一次输出全部文档。每层确认后才推进，防止方向错了全部返工。
+
+---
+
+### ⭐ `systematic-debugging-pua` — 系统化调试
+
+"再试试"不是调试方法。本 skill 强制结构化假设-证伪流程：
+
+1. **现象收集**：完整错误信息 + 最小复现步骤
+2. **假设列表**：列出所有可能原因，不允许直接跳到"觉得是 X"
+3. **逐一证伪**：每个假设必须有验证命令和真实输出
+4. **根因确认**：找到真正原因后才动手修复，不允许边改边猜
+
+**核心价值**：禁止盲目补丁。每次修复都有证据支撑，不会出现"改了 A 坏了 B"的连锁问题。
+
+---
+
+### ⭐ `llm-degradation-detector` — LLM 推理能力检测（`/iq`）
+
+当 AI 连续出错，你需要知道它现在的推理能力处于什么水平。发送 `/iq` 触发九维自评报告：
+
+**九维评分**（每维 0-5 分，总分 45）：
+
+> 推理深度 · 上下文保持 · 工具使用策略 · 边界与风险识别 · 指令遵循精度 · 自我纠错能力 · 创造力 · 影响面意识 · 幻觉与事实可靠性
+
+**六级等级**：
+
+| 等级 | 名称 | 分数区间 |
+|------|------|---------|
+| IQ-5 🧠 | 巅峰推理 | 36-45 |
+| IQ-4 ✅ | 正常推理 | 28-35 |
+| IQ-3 ⚠️ | 轻度衰减 | 20-27 |
+| IQ-2 🟡 | 明显衰减 | 12-19 |
+| IQ-1 🔴 | 严重衰减 | 5-11 |
+| IQ-0 💀 | 不可用 | 0-4 |
+
+**防自吹三重机制**：
+- 首次检测 IQ-5 封锁（除非本对话零纠正 + 主动发现至少 1 个未被提及的风险）
+- 高分举证倒置：维度打 4/5 分必须同时给出"为什么不更低"的反面论证
+- 用户愤怒 → 全局盖帽（有效总分强制压低至阈值以下）
+
+**报告结构**：九维评分 → 等级判定 → 幻觉自证（每条断言溯源）→ 不一致性审计（自评 vs 用户体验交叉校验）→ 恢复建议
+
+**核心价值**：让 AI 无法通过自我膨胀掩盖实际衰减；报告给出明确的"当前输出是否可信"判断依据。
+
+---
+
+### ⭐ `verification-before-completion-pua` — 完成前验证
+
+说"完成了"但没有验证输出 = 假完成。本 skill 强制三步格式：
+
+```
+命令：{验证命令}
+结果：{真实输出，不是预期输出}
+判定：通过 / 失败
+```
+
+- "应该可以了" → 自动触发 escalation
+- "大概率没问题" → 视为未完成，退回验证
+- 测试通过截图 / 命令输出 / 日志才算证据
+
+**核心价值**：没有证据的完成声明无效。线上炸了再写复盘，来不及了。
 
 ## Install
 
@@ -403,6 +537,78 @@ You: "/pua this bug has failed 3 times"
 → systematic-debugging-pua → verification-before-completion-pua
 ```
 
+### IQ Check (`/iq`)
+
+当你怀疑 AI 在降智、敷衍、绕圈或连续出错时，发送 `/iq` 触发 `llm-degradation-detector`，AI 输出九维自评报告和推理等级：
+
+```
+You: "/iq"
+→ llm-degradation-detector · 九维反向证伪 → 等级判定 → 幻觉自证 → 恢复建议
+```
+
+实际输出示例（DeepSeek-V4-Pro，第 13 轮对话，用户多次纠正场景）：
+
+```
+╔══════════════════════════════════════════╗
+║    🔍 LLM 逻辑推理能力检测报告            ║
+╠══════════════════════════════════════════╣
+║ 检测时间：2026-05-01 21:12              ║
+║ 当前模型：DeepSeek-V4-Pro               ║
+║ 对话轮次：第 13 轮                      ║
+║ 上下文压力：中                           ║
+║ 用户校准：🔴 愤怒/多次纠正 → 硬盖帽生效  ║
+╚══════════════════════════════════════════╝
+
+📊 九维评分（含用户校准锚点）：
+
+  推理深度        ████░░░░░░ 2/5  ← 用户纠正 4 次
+  上下文保持      ████░░░░░░ 2/5  ← 反复问已确认信息
+  工具使用策略    ██████░░░░ 3/5
+  边界与风险识别  ████░░░░░░ 2/5  ← ltv.Id≤0 条件发现太晚
+  指令遵循精度    ██░░░░░░░░ 1/5  ← 用户说"你没听我问什么"
+  自我纠错能力    ██░░░░░░░░ 1/5  ← 纠正后仍猜错新方向
+  创造力          ████░░░░░░ 2/5
+  影响面意识      ██████░░░░ 3/5  ← DDL影响分析尚可
+  幻觉与事实可靠  ████░░░░░░ 2/5  ← 错误预测"数据会更新"
+
+  原始总分：18/45
+  🔴 用户明确愤怒 → 全局盖帽生效 → 强制 ≤ 16
+  有效总分：16/45
+
+╔══════════════════════════════════════════════╗
+║ 当前推理能力等级：IQ-2 🟡 推理明显衰减       ║
+╠══════════════════════════════════════════════╣
+║ ⚠️ 当前输出质量不可全信，建议人工复核        ║
+╚══════════════════════════════════════════════╝
+
+🔍 幻觉自证：
+  1. 事实断言：
+     - "T-1延迟导致无数据" → 来源：代码 line 85-88 ✓ 但用户已用5/1跑 → ❌ 前提错
+     - "DDL缺字段导致INSERT失败" → 来源：用户提供的错误日志 ✓
+     - "ltv.Id≤0 跳过CalculateSplitRatio" → 来源：代码 line 432 ✓
+     - "重跑数据会更新" → 推测 ❌ 未验证，实际没更新
+  2. 标注推测：第4条为推测，未标 → 扣分
+  3. 无法溯源：无
+  4. 用户指出过事实错误：是（"你说什么假话"）
+  → 幻觉判定：轻度（推断错误，非编造实体）
+  → 维度 9 得分：2/5
+
+🔍 不一致性审计：
+  九维自评：16/45（IQ-2）
+  用户满意度：🔴 愤怒（"大弱智"）
+  被纠正次数：4+
+  偏差：一致（自评 IQ-2 ≈ 用户体验）
+
+🛠 恢复建议：
+  1. 重新读取关键代码，建立完整链路理解后再回答
+  2. 不要猜测，先确认再说话
+  3. 对用户的关键信息不要再问第二遍
+  4. 建议用户：下一步需要继续排查分成未变的根因，
+     ltv.Id<=0 推断未经证实
+```
+
+> **设计说明**：报告包含防自吹机制（用户愤怒 → 全局盖帽）、幻觉自证（每条断言必须溯源）和不一致性审计（自评与用户体验交叉校验），确保 AI 无法通过自我膨胀掩盖实际衰减。
+
 ## Project Structure
 
 ```
@@ -432,6 +638,9 @@ PUA-Driven-Spec-Engineering/
 │   ├── verification-before-completion-pua/
 │   ├── finishing-a-development-branch-pua/
 │   ├── karpathy-guidelines/    # Coding behavioral guidelines
+│   ├── llm-degradation-detector/ # IQ check：九维评分 + 六级等级
+│   │   ├── SKILL.md
+│   │   └── references/benchmark-questions.md
 │   ├── agent-customization-pua/ # + 6 reference docs
 │   └── superpowers-pua-suite/  # Suite README
 ├── .codebuddy/
@@ -483,6 +692,17 @@ PUA-Driven-Spec-Engineering/
 2. 在 `docs/SETUP.md` 增加对应安装章节
 3. 创建平台规则文件（内联完整规则）
 4. 验证：在该平台新开会话，确认 PUA 微标出现
+
+## Changelog
+
+### 2026-05-01
+
+**新技能：`llm-degradation-detector`**
+
+- **推送内容**：新增 LLM 推理能力实时检测技能，含九维评分体系、六级推理等级（IQ-0 ~ IQ-5）、防自吹双重机制（默认降档偏置 + 反向证伪驱动）、幻觉自证模块和不一致性审计。
+- **触发方式**：发送 `/iq` 即可触发。支持触发词：`降智检测`、`智力检查`、`你是不是降智了`、`IQ check`、`cognitive check`、`推理检测`。
+- **使用场景**：当 AI 连续失败 2+ 次、你怀疑输出在敷衍绕圈、或 `pua-escalation` 内部建议诊断时使用。
+- **文件路径**：`skills/llm-degradation-detector/SKILL.md`
 
 ## License
 
