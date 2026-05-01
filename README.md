@@ -2,6 +2,9 @@
 
 > 一套面向所有开发者的**公开多平台 AI 协作技能框架**，支持 Claude Code、OpenAI Codex CLI、CodeBuddy 和 GitHub Copilot 四个平台。通过自适应门禁、OpenSpec SDD 渐进确认和 Karpathy 编码准则，让 AI 编码助手更严谨、更可控。
 
+**作者**：huangwen  
+**联系邮箱**：1015141366@qq.com
+
 
 ## What Is This
 
