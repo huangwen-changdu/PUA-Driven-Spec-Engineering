@@ -1,7 +1,5 @@
 # PUA-Driven Engineering
 
-> 完整安装说明与平台配置指南见 [docs/SETUP.md](./docs/SETUP.md)。
-
 ## 默认技能流程
 
 **本仓库默认使用 `superpowers-pua` 技能套件。** 每次对话开始时，第一个动作必须是读取 `using-superpowers-pua` 技能（位于 `skills/using-superpowers-pua/SKILL.md`），由其完成接任务、门禁判断和技能路由。普通问题走 G0/G1 轻量快放，高压问题走完整 PUA 流程。
