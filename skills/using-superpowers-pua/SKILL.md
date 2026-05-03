@@ -57,22 +57,24 @@ description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when 
 **三重路由条件（任一命中即进入 brainstorming-pua）：**
 
 1. **需求成熟度 ≤ 6**：需求不够清楚，必须先澄清再设计
-2. **新功能 / 新模块 / 新 API / 架构变更**：无论成熟度多高，"从无到有"必须先做方案对比
+2. **新功能 / 新模块 / 新 API / 架构变更 / 真实业务需求 / 用户故事 / 体验流程变更**：无论成熟度多高，只要用户表达的是“想达成一个业务结果”，而不是明确指定一个已确认实现步骤，都必须先做方案对比和边界确认
 3. **变更风险 ≥ R2**：高风险变更必须先做方案对比和回滚设计
 
-成熟度只决定 brainstorming 中花多少轮澄清，不决定是否跳过。只有"全部三重条件都不命中"才可跳过 brainstorming-pua。
+**真实需求识别规则：** 用户用业务目标、用户体验、流程结果、角色诉求来描述需求（例如“用户需要… / 希望实现… / 让这个流程… / 现在不好用… / 支持一种… / 给我做一个…”），即使没有说“新功能”，也按真实业务需求处理，进入 `brainstorming-pua`。只有用户明确给出已确认方案、具体文件/函数/字段和可验证验收标准时，才允许跳过 brainstorming。
+
+成熟度只决定 brainstorming 中花多少轮澄清，不决定是否跳过。只有“全部三重条件都不命中”才可跳过 brainstorming-pua。
 
 **复合升级**：高风险+不清晰+大影响同时命中 2+ 维度时，在 max(成熟度档位, 变更风险档位) 基础上额外升档，并强制进入 OpenSpec SDD 完整流程。
 
 | 任务形态 | 必须进入的技能 |
 |---|---|
-| 需求成熟度 0-4（目标/约束严重不足） | **`brainstorming-pua`**（OpenSpec 完整四层 + 多轮澄清）+ 必要时 `pua-escalation` |
-| 需求成熟度 5-6（需设计澄清） | **`brainstorming-pua`**（OpenSpec 完整四层） |
-| 新功能 / 新模块 / 新 API / 架构变更（无论成熟度） | **`brainstorming-pua`**（OpenSpec Proposal→Specs→Design→Tasks） |
+| 需求成熟度 0-4（目标/约束严重不足） | **`brainstorming-pua`**（核心澄清 + OpenSpec 完整四层 + 多轮澄清）+ 必要时 `pua-escalation` |
+| 需求成熟度 5-6（需设计澄清） | **`brainstorming-pua`**（核心澄清 + OpenSpec 完整四层） |
+| 新功能 / 新模块 / 新 API / 架构变更 / 真实业务需求 / 用户故事 / 体验流程变更（无论成熟度） | **`brainstorming-pua`**（Core Clarification→Proposal→Specs→Design→Tasks） |
 | 变更风险 ≥ R2（数据/资金/权限/核心流程变更） | **`brainstorming-pua`**（OpenSpec 完整四层 + 文档落地） |
 | 复合升级命中 2+ 维度 | **`brainstorming-pua`**（OpenSpec 完整四层 + 逐步确认 + 强制文档落地） |
 | 已确认需求 + 无新设计 + 低风险 + 成熟度 7+ | `writing-plans-pua` |
-| OpenSpec 四层文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
+| OpenSpec 核心澄清 + 四层文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
 | 开始实现功能 | `test-driven-development-pua` |
 | 出现 Bug / 失败 / 异常行为 | `systematic-debugging-pua` |
 | 当前会话执行计划 | `subagent-driven-development-pua` 或 `executing-plans-pua` |

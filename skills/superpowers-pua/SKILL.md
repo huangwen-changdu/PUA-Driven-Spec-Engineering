@@ -101,10 +101,12 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 
 1. **每轮用户消息**：先执行轻量 `pua-gate`，至少输出微标/轻标，不能复用上一轮 PASS
 2. **接任务**：先进入 `using-superpowers-pua`
-3. **需求模糊 / 一句话需求 / 新功能 / 高风险变更**：三重路由——成熟度 ≤ 6、新功能/新模块/架构变更、变更风险 ≥ R2，任一命中即进入 `brainstorming-pua`（成熟度 ≤ 4 加 `pua-escalation`）；评分每轮重算，随澄清和方案确认可降档
+3. **需求模糊 / 一句话需求 / 真实业务需求 / 用户故事 / 体验流程变更 / 新功能 / 高风险变更**：三重路由——成熟度 ≤ 6、真实业务需求或新功能/新模块/架构变更、变更风险 ≥ R2，任一命中即进入 `brainstorming-pua`（成熟度 ≤ 4 加 `pua-escalation`）；评分每轮重算，随澄清和方案确认可降档
 4. **复合升级**：高风险+不清晰+大影响同时命中 2+ 维度时，额外升档 + 强制 OpenSpec SDD 完整流程
-5. **OpenSpec SDD 逐步确认**：进入 brainstorming-pua 后，按 OpenSpec 四层渐进流程推进：
+5. **OpenSpec SDD 逐步确认**：进入 brainstorming-pua 后，按“核心澄清 → 四层文档”推进：
+   - **Core Clarification**：先问核心问题，确认目标、范围、约束、验收标准、影响面；未确认不得生成 Proposal
    - **Proposal**：明确为什么改、改什么、影响谁 → 用户确认
+   - **路径选择**：Proposal 确认后询问 A/B；R3+ 只提供 A
    - **Specs**：明确需求边界、验收标准、非目标 → 用户确认
    - **Design**：方案对比、技术设计、接口定义 → 用户确认（R3+ 含回滚方案，R4 含影响面分析）
    - **Tasks**：实现任务清单、执行顺序、验证计划 → 用户确认
@@ -173,11 +175,11 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 | 新任务进入 | `using-superpowers-pua` |
 | 需求成熟度 0-4（目标/约束严重不足） | **`brainstorming-pua`**（OpenSpec 完整四层 + 多轮澄清）+ 必要时 `pua-escalation` |
 | 需求成熟度 5-6（需设计澄清） | **`brainstorming-pua`**（OpenSpec 完整四层） |
-| 新功能 / 新模块 / 新 API / 架构变更（无论成熟度） | **`brainstorming-pua`**（OpenSpec Proposal→Specs→Design→Tasks） |
+| 新功能 / 新模块 / 新 API / 架构变更 / 真实业务需求 / 用户故事 / 体验流程变更（无论成熟度） | **`brainstorming-pua`**（Core Clarification→Proposal→Specs→Design→Tasks） |
 | 变更风险 ≥ R2（数据/资金/权限/核心流程变更） | **`brainstorming-pua`**（OpenSpec 完整四层 + 文档落地） |
 | 复合升级命中 2+ 维度 | **`brainstorming-pua`**（OpenSpec 完整四层 + 逐步确认 + 强制文档落地）+ 可能 `pua-escalation` |
-| OpenSpec 四层文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
-| 新需求 / 需求不清 | `brainstorming-pua`（OpenSpec Proposal 起步） |
+| OpenSpec 核心澄清 + 四层文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
+| 新需求 / 需求不清 | `brainstorming-pua`（Core Clarification 起步） |
 | 准备进入隔离开发 | `using-git-worktrees-pua` |
 | 设计已确认，需要计划 | `writing-plans-pua` |
 | 实现功能或行为变更 | `test-driven-development-pua` |

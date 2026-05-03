@@ -28,14 +28,40 @@ description: "当新功能、行为变更或模糊需求需要先做设计时使
 
 ## OpenSpec 四层渐进流程
 
-**核心机制：做一步确认一步。** 每层产物完成后必须经用户确认，才能进入下一层。AI 不会在规范未明确时自行发挥。
+**核心机制：先完成核心问题澄清，再做一步确认一步。** 每层产物完成后必须经用户确认，才能进入下一层。AI 不会在规范未明确时自行发挥。
 
 ```
-Proposal ─────→ Specs ─────→ Design ─────→ Tasks
-(确认)          (确认)       (确认)        (确认) → writing-plans-pua
+Core Clarification ─→ Proposal ─────→ Specs ─────→ Design ─────→ Tasks
+(核心问题确认)       (确认)          (确认)       (确认)        (确认) → writing-plans-pua
 ```
 
-四层依赖链：`proposal → specs + design → tasks → apply`。前一层未确认，后一层无法正确生成。
+四层依赖链：`core-clarification → proposal → specs + design → tasks → apply`。核心问题未回答不得进入 Proposal；前一层未确认，后一层无法正确生成。
+
+### 第零层：Core Clarification（核心问题澄清）
+
+**回答的问题**：用户到底要达成什么？受什么约束？怎样算成功？
+
+**硬门禁**：进入 Proposal 前，必须先完成核心问题澄清。以下任一项缺失或存在多种合理理解时，不得生成 Proposal、Specs、Design、Tasks，也不得进入 `writing-plans-pua`：
+
+1. **Purpose / 目标**：为什么要做？要解决谁的什么问题？
+2. **Scope / 范围**：本次做什么、不做什么？是否需要拆成多个子项目？
+3. **Constraints / 约束**：兼容性、性能、权限、数据、时间、平台或现有架构限制是什么？
+4. **Success Criteria / 验收标准**：用户如何判断这个需求完成了？可验证证据是什么？
+5. **Impact / 影响面**：会影响哪些用户、流程、模块、接口、数据或下游消费者？
+
+**执行规则**：
+- 先查项目上下文，再问用户；工具能补事实，不能替用户决定业务意图。
+- 一次只问一个核心问题；优先给 2-3 个选项，避免开放式甩锅。
+- 每轮回答后更新澄清队列和成熟度评分；仍有核心缺口则继续问，不得静默推进。
+- 如果需求包含多个独立子系统，先要求拆分，选定第一个子项目后再进入 Proposal。
+- 只有当上述核心问题已由用户回答或由明确项目事实支撑，并且 AI 已复述确认，才允许进入第一层 Proposal。
+
+**最小提问模板**：
+
+```text
+进入 Proposal 前还差一个核心确认：{当前缺口}。
+请选择：A. {选项1} / B. {选项2} / C. {选项3}
+```
 
 ### 第一层：Proposal（提案）
 
@@ -259,12 +285,14 @@ B. writing-plans 快速路径（适合需求已清晰的低风险变更）
 
 **每个阶段完成后必须暂停，呈现给用户确认，确认后才进入下一阶段。** 这是 OpenSpec 的核心纪律：
 
-1. 完成 proposal → 呈现给用户 → 用户确认 → 进入 specs
-2. 完成 specs → 呈现给用户 → 用户确认 → 进入 design
-3. 完成 design → 呈现给用户 → 用户确认 → 进入 tasks
-4. 完成 tasks → 呈现给用户 → 用户确认 → 进入 writing-plans-pua
+0. 完成 core clarification → 用户回答/确认核心问题 → 进入 proposal
+1. 完成 proposal → 呈现给用户 → 用户确认 → 进入路径选择
+2. 完成路径选择 → 用户选择 A/B → A 进入 specs，B 进入 writing-plans-pua（R3+ 不提供 B）
+3. 完成 specs → 呈现给用户 → 用户确认 → 进入 design
+4. 完成 design → 呈现给用户 → 用户确认 → 进入 tasks
+5. 完成 tasks → 呈现给用户 → 用户确认 → 进入 writing-plans-pua
 
-**不允许跳步**：不能一次输出全部四层文档然后问"这样可以吗"。每一层都是对上一层的细化与确认，前一层未完成则后一层无法正确生成。
+**不允许跳步**：不能一次输出全部四层文档然后问"这样可以吗"。每一层都是对上一层的细化与确认，前一层未完成则后一层无法正确生成。Core Clarification 未完成时，连 Proposal 都不允许生成。
 
 ### 需求成熟度与 OpenSpec 流程的关系
 
@@ -327,10 +355,12 @@ openspec/changes/{change-name}/ → openspec/changes/archive/{date}-{change-name
 
 ## 硬门禁
 
-在设计方向明确并被确认前：
+在核心问题澄清完成、设计方向明确并被确认前：
 
 - 不写代码
 - 不进入实现
+- 不生成 Proposal
+- 不进入 Specs / Design / Tasks
 - 不直接写计划冒充设计完成
 - 不跳过 OpenSpec 的逐步确认
 - 不一次输出多层文档跳过中间确认
@@ -352,6 +382,7 @@ openspec/changes/{change-name}/ → openspec/changes/archive/{date}-{change-name
 | 失败方式 | 修正方式 |
 |---|---|
 | 直接跳到代码 | 留在设计阶段 |
+| 直接生成 Proposal | 先问核心问题，确认目标/范围/约束/验收/影响面 |
 | 一次问太多问题 | 一次只问一个 |
 | 只给一个方案 | 至少给可比较方案 |
 | 只看当前点，不看相邻影响 | 明确补上边界和同类问题分析 |
@@ -378,4 +409,4 @@ openspec/changes/{change-name}/ → openspec/changes/archive/{date}-{change-name
 
 ## 交接
 
-设计确认（四层文档全部落地并获用户确认）后，下一步是 `writing-plans-pua`。
+设计确认（核心问题澄清完成 + 四层文档全部落地并获用户确认）后，下一步是 `writing-plans-pua`。
