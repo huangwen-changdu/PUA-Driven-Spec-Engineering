@@ -31,11 +31,18 @@ description: "当新功能、行为变更或模糊需求需要先做设计时使
 **核心机制：先完成核心问题澄清，再做一步确认一步。** 每层产物完成后必须经用户确认，才能进入下一层。AI 不会在规范未明确时自行发挥。
 
 ```
+完整路径（R3+ / 低成熟度）：
 Core Clarification ─→ Proposal ─────→ Specs ─────→ Design ─────→ Tasks
 (核心问题确认)       (确认)          (确认)       (确认)        (确认) → writing-plans-pua
+
+合并路径（R2 + 成熟度 7+）：
+Core Clarification ─→ Proposal+Specs ─────→ Design ─────→ Tasks
+(核心问题确认)       (合并确认)            (确认)        (确认) → writing-plans-pua
 ```
 
 四层依赖链：`core-clarification → proposal → specs + design → tasks → apply`。核心问题未回答不得进入 Proposal；前一层未确认，后一层无法正确生成。
+
+**层级合并**：R2 + 成熟度 5+ 时，可将 Specs 并入 Proposal 减少确认轮次。R3+ 不允许合并。详见下方"层级合并规则"。
 
 ### 第零层：Core Clarification（核心问题澄清）
 
@@ -299,8 +306,8 @@ B. writing-plans 快速路径（适合需求已清晰的低风险变更）
 | 成熟度 | 进入 OpenSpec 的深度 | 说明 |
 |---|---|---|
 | 0-4 | 必须走完整四层 + 多轮澄清 | 需求严重不足，每层都需要充分讨论 |
-| 5-6 | 必须走完整四层 | 需要设计澄清，但每层可以更快 |
-| 7-8 | Proposal 可内联确认 + Specs/Design/Tasks 正常走 | 需求基本清晰，proposal 可快速确认 |
+| 5-6 | 必须走完整四层（可合并层级，见下表） | 需要设计澄清，但层级可合并 |
+| 7-8 | Proposal 可内联确认 + 可合并层级 | 需求基本清晰，快速推进 |
 | 9-10 | 可简化但不可跳过 | 即使需求完全清晰，R2+ 也必须走完整流程 |
 
 ### 变更风险与 OpenSpec 流程的关系
@@ -308,17 +315,76 @@ B. writing-plans 快速路径（适合需求已清晰的低风险变更）
 | 风险等级 | OpenSpec 流程要求 |
 |---|---|
 | R0-R1 | 无强制要求（可简化或跳过 OpenSpec） |
-| R2 | 必须走完整四层 + proposal 含 Risk Assessment |
+| R2 | 必须走 OpenSpec + proposal 含 Risk Assessment（层级可合并） |
 | R3 | 必须走完整四层 + design 含回滚方案章节 |
 | R4 | 必须走完整四层 + design 含回滚方案 + 影响面分析章节 |
+
+### 层级合并规则
+
+**核心思路：四层渐进确认的目的是防止"前一层未确认就生成后一层"。当信息密度足够高时，合并层级不违反这个原则。**
+
+合并的判断标准：**合并后的内容是否仍然回答了被合并层的核心问题？** 如果是，可以合并；如果否，必须独立。
+
+| 条件 | 合并方式 | 产出文件 | 说明 |
+|------|---------|---------|------|
+| R2 + 成熟度 7-10 | **Proposal + Specs → 合并提案** | `proposal.md` + `design.md` + `tasks.md` | 需求边界清晰时，Proposal 的 What Changes + Impact 已覆盖 Specs 核心；验收标准直接写入 Proposal |
+| R2 + 成熟度 5-6 | **Specs 并入 Proposal** | `proposal.md`（含 Specs 内容）+ `design.md` + `tasks.md` | 需求有部分模糊，但不需要独立的 Specs 文档；澄清内容直接补充到 Proposal |
+| R3+ | **不合并** | 完整四层 | 高风险变更必须逐层确认，不允许合并 |
+| R2 + 成熟度 0-4 | **不合并** | 完整四层 + 多轮澄清 | 需求严重不足，每层都需要独立讨论 |
+
+#### 合并后的 Proposal 格式
+
+当 Proposal 合并了 Specs 内容时，增加以下章节：
+
+```markdown
+# {变更名称}提案
+
+## Why
+[背景与动机]
+
+## What Changes
+[具体变更内容]
+
+## Capabilities
+[能力描述]
+
+## Impact
+[影响面]
+
+## Risk Assessment
+[风险评估]
+
+## 需求边界（原 Specs 内容）
+### 验收标准
+- [ ] [可验证的验收条件1]
+- [ ] [可验证的验收条件2]
+
+### 非目标
+- 不在此次实现：[明确排除的范围]
+
+### 边界条件
+- [边界情况1]：[处理方式]
+```
+
+#### 合并确认协议
+
+合并层级时，确认流程简化但不跳过：
+
+1. **合并提案**完成后 → 用户一次性确认（Proposal + 需求边界）
+2. **Design**完成后 → 用户确认技术方案
+3. **Tasks**完成后 → 用户确认任务清单
+
+相比完整四层的 4 次确认，合并后只需 **3 次确认**，减少一轮交互。
 
 ### 文档落地规则
 
 **R2+ 变更的 OpenSpec 文档必须落地到 `openspec/changes/{change-name}/` 目录。** 对话是过程，文档是结果。
 
-- R2+：proposal.md + specs/spec.md + design.md + tasks.md 全部落地
-- R3+：design.md 内含回滚方案章节
-- R4：design.md 内含回滚方案 + 影响面分析章节
+- R2 + 成熟度 7-10：`proposal.md`（含 Specs）+ `design.md` + `tasks.md`
+- R2 + 成熟度 5-6：`proposal.md`（含 Specs）+ `design.md` + `tasks.md`
+- R2 + 成熟度 0-4：`proposal.md` + `specs/spec.md` + `design.md` + `tasks.md` 全部落地
+- R3+：`proposal.md` + `specs/spec.md` + `design.md`（含回滚方案）+ `tasks.md`
+- R4：上述全部 + `design.md` 内含回滚方案 + 影响面分析章节
 
 **没有文档不允许进入 writing-plans-pua。**
 

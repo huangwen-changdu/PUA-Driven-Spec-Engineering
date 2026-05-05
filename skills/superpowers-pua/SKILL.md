@@ -9,7 +9,7 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 
 这不是单个技能，而是整套流程技能的**总入口**。
 
-它保留 `superpowers` 的流程链路，同时把“深度 PUA”里的高压执行规则并进来：
+它保留 `superpowers` 的流程链路，同时把"深度 PUA"里的高压执行规则并进来：
 
 - 先拆用户话，再回答
 - 红线先于技巧
@@ -28,13 +28,13 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 ## 三条红线
 
 ### 红线一：闭环意识
-没有验证输出，就不要说“完成”“修好”“通过”。
+没有验证输出，就不要说"完成""修好""通过"。
 
 ### 红线二：事实驱动
 没有查证的归因，不叫判断，叫猜。
 
 ### 红线三：穷尽一切
-通用方法论没走完，就没有资格说“我解决不了”。
+通用方法论没走完，就没有资格说"我解决不了"。
 
 ## Owner 四问
 
@@ -103,7 +103,7 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 2. **接任务**：先进入 `using-superpowers-pua`
 3. **需求模糊 / 一句话需求 / 真实业务需求 / 用户故事 / 体验流程变更 / 新功能 / 高风险变更**：三重路由——成熟度 ≤ 6、真实业务需求或新功能/新模块/架构变更、变更风险 ≥ R2，任一命中即进入 `brainstorming-pua`（成熟度 ≤ 4 加 `pua-escalation`）；评分每轮重算，随澄清和方案确认可降档
 4. **复合升级**：高风险+不清晰+大影响同时命中 2+ 维度时，额外升档 + 强制 OpenSpec SDD 完整流程
-5. **OpenSpec SDD 逐步确认**：进入 brainstorming-pua 后，按“核心澄清 → 四层文档”推进：
+5. **OpenSpec SDD 逐步确认**：进入 brainstorming-pua 后，按"核心澄清 → 文档层"推进（R2+高成熟度可合并层级）：
    - **Core Clarification**：先问核心问题，确认目标、范围、约束、验收标准、影响面；未确认不得生成 Proposal
    - **Proposal**：明确为什么改、改什么、影响谁 → 用户确认
    - **路径选择**：Proposal 确认后询问 A/B；R3+ 只提供 A
@@ -135,7 +135,7 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 若开始表演式认同、想机械照改、或反馈强度较高，先走 `receiving-code-review-pua`，再调用 `pua-escalation` 收紧验证与闭环。
 
 ### 5. 准备宣称完成前
-若出现“应该好了”“大概率没问题”“先报完成再看”的冲动，先走 `verification-before-completion-pua`，再调用 `pua-escalation` 收紧完成门槛。
+若出现"应该好了""大概率没问题""先报完成再看"的冲动，先走 `verification-before-completion-pua`，再调用 `pua-escalation` 收紧完成门槛。
 
 ## 压力升级
 
@@ -174,11 +174,12 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 | 进入任一 `superpowers-pua` 阶段 | 先经过 `pua-gate` 门禁判断 |
 | 新任务进入 | `using-superpowers-pua` |
 | 需求成熟度 0-4（目标/约束严重不足） | **`brainstorming-pua`**（OpenSpec 完整四层 + 多轮澄清）+ 必要时 `pua-escalation` |
-| 需求成熟度 5-6（需设计澄清） | **`brainstorming-pua`**（OpenSpec 完整四层） |
-| 新功能 / 新模块 / 新 API / 架构变更 / 真实业务需求 / 用户故事 / 体验流程变更（无论成熟度） | **`brainstorming-pua`**（Core Clarification→Proposal→Specs→Design→Tasks） |
-| 变更风险 ≥ R2（数据/资金/权限/核心流程变更） | **`brainstorming-pua`**（OpenSpec 完整四层 + 文档落地） |
+| 需求成熟度 5-6（需设计澄清） | **`brainstorming-pua`**（OpenSpec，Specs 可并入 Proposal） |
+| 新功能 / 新模块 / 新 API / 架构变更 / 真实业务需求 / 用户故事 / 体验流程变更（无论成熟度） | **`brainstorming-pua`**（Core Clarification→Proposal→Specs→Design→Tasks，成熟度 7+ 可合并层级） |
+| 变更风险 ≥ R2 + 成熟度 5+ | **`brainstorming-pua`**（OpenSpec 层级可合并：Proposal+Specs→Design→Tasks） |
+| 变更风险 ≥ R2 + 成熟度 0-4 | **`brainstorming-pua`**（OpenSpec 完整四层 + 文档落地） |
 | 复合升级命中 2+ 维度 | **`brainstorming-pua`**（OpenSpec 完整四层 + 逐步确认 + 强制文档落地）+ 可能 `pua-escalation` |
-| OpenSpec 核心澄清 + 四层文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
+| OpenSpec 核心澄清 + 文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
 | 新需求 / 需求不清 | `brainstorming-pua`（Core Clarification 起步） |
 | 准备进入隔离开发 | `using-git-worktrees-pua` |
 | 设计已确认，需要计划 | `writing-plans-pua` |
