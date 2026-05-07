@@ -27,11 +27,12 @@ description: "当实现已完成且已验证，需要明确收尾而不是让工
 0. 确认**本轮用户消息**已完成第 0 步门禁；不能复用上一轮 `pua-gate` 结果
 1. 验证测试和必要检查
 2. 确认基线分支
-3. 清楚地给出收尾选项
-4. 判断是否需要调用 `pua-escalation`
-5. 若本轮有用户纠正、重复失败或可复用坑点，调用 `pua-learning-loop` 确认学习卡是否已落地
-6. 安全执行用户选择
-7. 只在合适时清理环境
+3. 若本次变更包含 `Change Metadata`，执行 `Feature Ledger Writeback`：归档 `openspec/changes/{change-name}/` 后，更新 `openspec/features/{feature-name}/README.md` 的当前版本、最近变更、版本历史、关键决策、已知约束和归档路径
+4. 清楚地给出收尾选项
+5. 判断是否需要调用 `pua-escalation`
+6. 若本轮有用户纠正、重复失败或可复用坑点，调用 `pua-learning-loop` 确认学习卡是否已落地
+7. 安全执行用户选择
+8. 只在合适时清理环境
 
 ## 直接调用 `pua-escalation` 的触发条件
 
@@ -60,6 +61,18 @@ description: "当实现已完成且已验证，需要明确收尾而不是让工
 - 已推送并发起 PR
 - 明确保留当前状态
 - 明确确认后丢弃
+
+## Feature Ledger Writeback 完成条件
+
+当本次变更包含 `Change Metadata` 时，声称完成前必须检查：
+
+- `openspec/changes/{change-name}/` 已按流程归档，或明确说明本轮尚未归档
+- `openspec/features/{feature-name}/README.md` 已更新当前版本和最近变更
+- `版本历史` 已增加本次变更记录
+- `关键决策` 和 `已知约束` 已写入本次新增的重要结论
+- `关联文档` 已写入当前 change 或归档路径
+
+没有完成 Feature Ledger Writeback，不允许说“完成/收尾完成”。
 
 ## 压力升级（内联保底）
 
