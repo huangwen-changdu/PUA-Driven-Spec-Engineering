@@ -76,7 +76,7 @@ description: "PRIMARY ENTRY for the PUA-Driven Spec Engineering suite. Use when 
 | 复合升级命中 2+ 维度 | **`brainstorming-pua`**（OpenSpec 完整四层 + 逐步确认 + 强制文档落地） |
 | 已确认需求 + 无新设计 + 低风险 + 成熟度 7+ | `writing-plans-pua` |
 | OpenSpec 核心澄清 + 文档全部确认完成 | `writing-plans-pua`（基于 tasks.md） |
-| 开始实现功能 | `test-driven-development-pua`（R0-R2 + 小粒度任务可用批量 TDD 模式） |
+| 已确认实现阶段且需要测试证据 | `test-driven-development-pua`（默认 TDD-Lite；R2+、复杂行为、回归风险再升级 Strict TDD） |
 | 出现 Bug / 失败 / 异常行为 | `systematic-debugging-pua` |
 | 当前会话执行计划 | `subagent-driven-development-pua` 或 `executing-plans-pua`（执行阶段门禁降级） |
 | 准备宣称完成 | `verification-before-completion-pua` |

@@ -183,7 +183,7 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 | 新需求 / 需求不清 | `brainstorming-pua`（Core Clarification 起步） |
 | 准备进入隔离开发 | `using-git-worktrees-pua` |
 | 设计已确认，需要计划 | `writing-plans-pua` |
-| 实现功能或行为变更 | `test-driven-development-pua` |
+| 已确认实现阶段且需要测试证据 | `test-driven-development-pua` |
 | 排查 Bug / 异常 / 失败 | `systematic-debugging-pua` |
 | 当前会话执行计划 | `subagent-driven-development-pua` 或 `executing-plans-pua` |
 | 任务天然独立且适合并行 | `dispatching-parallel-agents-pua` |

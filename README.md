@@ -143,7 +143,7 @@ AI 会在每轮输出中显示流程进度：
 
 | Skill | 何时用 |
 |-------|--------|
-| `test-driven-development-pua` | 实现任何功能或修 Bug；先写复现测试，再让它通过（R0-R2小任务可用批量模式） |
+| `test-driven-development-pua` | 已确认实现阶段且需要测试证据；默认 TDD-Lite，Bug 先定位根因，R2+ 或复杂行为再升级 Strict TDD |
 | `systematic-debugging-pua` ⭐ | Bug 排查 / 多次修复无效；假设列表 + 逐一证伪，禁止盲目补丁 |
 | `subagent-driven-development-pua` | 执行多步骤计划；子 agent 分工执行（执行阶段门禁降级，异常触发） |
 | `dispatching-parallel-agents-pua` | 多个独立任务同时推进；并行调度提速，互不等待 |
