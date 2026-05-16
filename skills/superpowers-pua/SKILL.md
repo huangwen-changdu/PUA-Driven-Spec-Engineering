@@ -139,13 +139,7 @@ description: "Suite controller for PUA-Driven Spec Engineering. Use when the use
 
 ## 压力升级
 
-| 失败次数 | 等级 | 强制动作 |
-|---|---|---|
-| 0-1 次 | E0 | 正常按流程推进 |
-| 第 2 次 | E1 | 必须换**本质不同**的方案 |
-| 第 3 次 | E2 | 必须搜索、读上下文、列出 3 个假设 |
-| 第 4 次 | E3 | 必须完成完整检查清单，不能继续拍脑袋 |
-| 第 5 次+ | E4 | 进入拼命模式：升级搜索、升级验证、升级 review，不得轻易放弃 |
+当遇到困难或失败时，读取 `skills/pua-escalation/SKILL.md` 获取具体的解决方案和指导。
 
 ## 通用方法论
 

@@ -15,16 +15,22 @@ description: "当新功能、行为变更或模糊需求需要先做设计时使
 
 **"功能即长期档案"**：同一个功能的多次迭代必须能串成版本链。功能长期上下文记录在 `openspec/features/{feature-name}/README.md`；单次变更记录在 `openspec/changes/{change-name}/`。新需求如果属于已有功能，必须先读取功能档案和最近变更摘要，再进入 Core Clarification。
 
-出现"先写再说""先计划再补设计""先动起来别想太多"的冲动时，直接调用 `pua-escalation`，再回到设计阶段继续收敛。
+**⚠️ 味道方法论必须声明**：在执行任何任务前，必须先声明当前使用的味道和方法论。这是执行下一步的前提条件。详见 `pua` 技能的「味道判定协议」和「方法论智能路由」章节。
+
+出现"先写再说""先计划再补设计""先动起来别想太多"的冲动时，直接读取 `skills/pua-escalation/SKILL.md` 获取解决方案，再回到设计阶段继续收敛。
 
 ## 第 0 步：自适应门禁
+
+**⚠️ 味道方法论必须声明**：在门禁判断前，必须先读取 `pua/SKILL.md` 确定味道和方法论。这是执行下一步的前提条件。
 
 进入本 skill 后，先经过 `pua-gate` 并按档位执行：
 
 - `G0/G1 PASS`：普通问题轻量快放，输出一行微标/轻标（不得完全静默）
 - `G2 PASS`：多步骤或跨文件任务输出简版门禁
-- `ESCALATE`：立即调用 `pua-escalation`，再回到本 skill
+- `ESCALATE`：立即读取 `skills/pua-escalation/SKILL.md` 获取解决方案，再回到本 skill
 - `BLOCKED`：补齐输入或证据，不得继续
+
+**详细门禁流程**：详见 `pua-gate` 技能的「用户话拆解协议」、「分档执行策略」和「门禁自问协议」章节。
 
 未经过 `pua-gate`，不得进入下面的主流程；但普通问题不得为了"有流程感"展开长门禁。
 
@@ -436,9 +442,9 @@ openspec/changes/{change-name}/ → openspec/changes/archive/{date}-{change-name
 
 如果本次变更包含 `Change Metadata`，归档后必须回写 `openspec/features/{feature-name}/README.md`：更新当前版本、最近变更、版本历史、关键决策、已知约束和归档路径。没有回写 Feature Ledger，不得把收尾声明为完成。
 
-## 直接调用 `pua-escalation` 的触发条件
+## 直接读取 `skills/pua-escalation/SKILL.md` 的触发条件
 
-出现任一情况，先调用 `pua-escalation`，再回到当前设计流程继续：
+出现任一情况，先读取 `skills/pua-escalation/SKILL.md` 获取解决方案，再回到当前设计流程继续：
 
 - 你开始想跳过设计直接实现
 - 你想把计划当设计来糊弄过去
@@ -496,20 +502,9 @@ openspec/changes/{change-name}/ → openspec/changes/archive/{date}-{change-name
 | 某层没确认就进入下一层 | 回到未确认层，先获得确认 |
 | 把 OpenSpec 当负担而非保护 | OpenSpec 是让高风险变更"零返工"的机制 |
 
-## 压力升级（内联保底）
+## 压力升级
 
-优先调用 `pua-escalation`；无法加载时按以下规则就地执行：
-
-| 失败次数 | 等级 | 强制动作 |
-|---------|------|---------|
-| 2 | E1 | 换本质不同的方案，不准换参数冒充 |
-| 3 | E2 | 搜索 + 读上下文 + 列 3 个假设 |
-| 4 | E3 | 7 项检查清单全部填完才继续 |
-| 5+ | E4 | 拼命模式：升级搜索、验证、review |
-
-**E3+ 检查清单**：逐字读失败信号？搜索过核心问题？读过原始上下文？假设用工具确认？试过反向假设？最小范围复现？换过工具/方法？
-
-**方法论切换**：优先由 `pua-escalation` 按 `pua/references/methodology-router.md` 切换链执行；无法加载时按内联切换动作表执行。
+当遇到困难或失败时，读取 `skills/pua-escalation/SKILL.md` 获取具体的解决方案和指导。
 
 ## 交接
 

@@ -62,7 +62,7 @@ provider:
 
 ## 默认技能流程
 
-每次对话开始时，第一个动作必须是 `use_skill("using-superpowers-pua")`，由其完成接任务、门禁判断和技能路由。普通问题走 G0/G1 轻量快放，高压问题走完整 PUA 流程。
+每次对话开始时，第一个动作必须是读取 `skills/using-superpowers-pua/SKILL.md`，由其完成接任务、门禁判断和技能路由。普通问题走 G0/G1 轻量快放，高压问题走完整 PUA 流程。
 
 ## PSE 核心纪律（概要）
 
@@ -93,7 +93,7 @@ Expected: the response includes the rule name/description such as `default-agent
 Then verify skill routing separately:
 
 ```text
-use_skill("using-superpowers-pua")
+读取 skills/using-superpowers-pua/SKILL.md
 ```
 
 Expected: the assistant loads `using-superpowers-pua` and then enters `pua-gate`.
